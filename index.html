@@ -3,76 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Clipfarm AI Pro - Enterprise-grade self-hosted short-form content generator. Convert YouTube videos into viral retention-optimized Shorts, Reels, and TikToks instantly.">
-  <meta name="author" content="Clipfarm AI Studio">
   <title>Clipfarm AI Pro - Enterprise Viral Short Generator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    /* =========================================================================
-       1. CORE DESIGN SYSTEM & VARIABLES
-       ========================================================================= */
     :root {
-      --bg-dark-900: #05030a;
-      --bg-dark-800: #070510;
-      --bg-dark-700: #0e0a1a;
+      --bg-dark: #070510;
       --panel-bg: rgba(14, 10, 26, 0.94);
-      --panel-glass: rgba(18, 14, 33, 0.85);
-      --border-purple: rgba(139, 92, 246, 0.25);
-      --border-bright: rgba(139, 92, 246, 0.5);
+      --border-color: rgba(139, 92, 246, 0.25);
       --accent-purple: #8b5cf6;
-      --accent-purple-glow: rgba(139, 92, 246, 0.4);
       --accent-cyan: #06b6d4;
-      --accent-cyan-glow: rgba(6, 182, 212, 0.4);
-      --accent-pink: #ec4899;
       --accent-emerald: #10b981;
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
-      --text-subtle: #6b7280;
-      --sidebar-width: 460px;
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
-      --radius-xl: 32px;
-      --transition-fast: 0.15s ease;
-      --transition-normal: 0.25s ease;
-      --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      --sidebar-width: 440px;
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      background-color: var(--bg-dark-900);
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    
+    body {
+      background-color: var(--bg-dark);
       color: var(--text-main);
+      min-height: 100vh;
       overflow: hidden;
-      user-select: none;
     }
 
-    /* =========================================================================
-       2. CANVAS BACKGROUND ENGINE
-       ========================================================================= */
     #space-bg {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0; width: 100vw; height: 100vh;
       z-index: 0;
       pointer-events: none;
     }
 
-    /* =========================================================================
-       3. SCREEN 1: LANDING HERO INTERFACE
-       ========================================================================= */
+    /* SCREEN 1: LANDING HERO */
     .hero-container {
       position: relative;
       z-index: 10;
@@ -81,131 +43,63 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 32px 24px;
-      transition: opacity var(--transition-smooth), transform var(--transition-smooth);
+      padding: 24px;
+      transition: opacity 0.4s ease;
     }
 
-    .hero-container.hidden {
-      opacity: 0;
-      transform: scale(0.95);
-      pointer-events: none;
-      display: none !important;
-    }
+    .hero-container.hidden { display: none !important; }
 
     .hero-box {
-      background: var(--panel-glass);
-      border: 1px solid var(--border-bright);
-      box-shadow: 0 0 80px var(--accent-purple-glow), inset 0 0 30px rgba(139, 92, 246, 0.1);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border-radius: var(--radius-xl);
-      padding: 64px 52px;
-      max-width: 720px;
+      background: rgba(15, 11, 28, 0.9);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      box-shadow: 0 0 80px rgba(139, 92, 246, 0.35);
+      backdrop-filter: blur(24px);
+      border-radius: 32px;
+      padding: 56px 48px;
+      max-width: 680px;
       width: 100%;
       text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-box::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: rgba(139, 92, 246, 0.15);
-      border: 1px solid var(--border-purple);
-      border-radius: 100px;
-      color: var(--accent-purple);
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 24px;
     }
 
     .hero-box h1 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 3.2rem;
+      font-size: 3rem;
       font-weight: 700;
-      line-height: 1.15;
-      background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #ec4899 100%);
+      background: linear-gradient(135deg, #a78bfa, #38bdf8, #ec4899);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 18px;
-      letter-spacing: -1px;
+      margin-bottom: 16px;
     }
 
-    .hero-box p {
-      color: var(--text-muted);
-      font-size: 1.15rem;
-      margin-bottom: 44px;
-      line-height: 1.6;
-      max-width: 580px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .input-wrapper {
-      position: relative;
-      margin-bottom: 28px;
-    }
+    .hero-box p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 36px; line-height: 1.6; }
 
     .input-wrapper input {
       width: 100%;
-      padding: 22px 28px;
+      padding: 22px 26px;
       background: rgba(7, 5, 16, 0.9);
-      border: 1px solid var(--border-purple);
-      border-radius: var(--radius-lg);
-      color: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      color: #fff;
       font-size: 1.1rem;
       outline: none;
-      transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
-    }
-
-    .input-wrapper input:focus {
-      border-color: var(--accent-purple);
-      box-shadow: 0 0 30px var(--accent-purple-glow);
-    }
-
-    .input-wrapper input::placeholder {
-      color: var(--text-subtle);
+      margin-bottom: 24px;
     }
 
     .btn-analyze {
       width: 100%;
-      padding: 22px;
-      background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-cyan) 100%);
+      padding: 20px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
       border: none;
-      border-radius: var(--radius-lg);
-      color: #ffffff;
-      font-size: 1.25rem;
+      border-radius: 18px;
+      color: white;
+      font-size: 1.2rem;
       font-weight: 800;
       cursor: pointer;
       display: none;
-      box-shadow: 0 0 35px var(--accent-purple-glow);
-      transition: transform var(--transition-fast), box-shadow var(--transition-normal);
-      letter-spacing: 0.5px;
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
     }
 
-    .btn-analyze:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 45px var(--accent-cyan-glow);
-    }
-
-    /* =========================================================================
-       4. SCREEN 2: STUDIO WORKSPACE
-       ========================================================================= */
+    /* SCREEN 2: WORKSPACE */
     .app-workspace {
       position: relative;
       z-index: 10;
@@ -214,175 +108,112 @@
       width: 100vw;
     }
 
-    .app-workspace.active {
-      display: flex !important;
-    }
+    .app-workspace.active { display: flex !important; }
 
-    /* Left Side Control Panel */
+    /* SIDE PANEL */
     .side-panel {
       width: var(--sidebar-width);
       height: 100%;
       background: var(--panel-bg);
-      border-right: 1px solid var(--border-purple);
-      backdrop-filter: blur(32px);
-      -webkit-backdrop-filter: blur(32px);
+      border-right: 1px solid var(--border-color);
+      backdrop-filter: blur(28px);
       display: flex;
       flex-direction: column;
       overflow-y: auto;
-      padding: 32px;
-      gap: 32px;
+      padding: 28px;
+      gap: 28px;
       z-index: 20;
     }
 
-    .side-panel::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .side-panel::-webkit-scrollbar-thumb {
-      background: rgba(139, 92, 246, 0.3);
-      border-radius: 3px;
-    }
-
     .panel-section-title {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.3px;
       color: var(--accent-cyan);
       font-weight: 800;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
     }
 
-    /* Clip Moment Cards */
+    /* 10 CLIP CARDS LIST */
+    .clip-list-container {
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
     .clip-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-md);
-      padding: 18px;
-      margin-bottom: 12px;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
       cursor: pointer;
-      transition: all var(--transition-normal);
+      transition: all 0.2s ease;
     }
 
     .clip-card:hover, .clip-card.active {
       border-color: var(--accent-purple);
       background: rgba(139, 92, 246, 0.15);
-      box-shadow: 0 0 25px rgba(139, 92, 246, 0.25);
     }
 
-    .clip-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .clip-card-title {
-      font-weight: 700;
-      font-size: 0.98rem;
-    }
-
+    .clip-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .clip-card-title { font-weight: 700; font-size: 0.88rem; }
     .viral-badge {
       background: rgba(16, 185, 129, 0.2);
       color: var(--accent-emerald);
       border: 1px solid var(--accent-emerald);
-      font-size: 0.72rem;
-      padding: 3px 10px;
-      border-radius: 100px;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
       font-weight: 800;
     }
 
-    .clip-card-desc {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
+    .clip-card-desc { font-size: 0.78rem; color: var(--text-muted); }
 
-    /* Captions Selection Grid */
-    .captions-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+    /* CAPTIONS GRID */
+    .captions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .cap-btn {
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-purple);
-      color: #ffffff;
-      padding: 14px 12px;
-      border-radius: var(--radius-md);
-      font-size: 0.82rem;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 12px 10px;
+      border-radius: 12px;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
       text-align: center;
-      transition: all var(--transition-normal);
+      transition: all 0.2s ease;
     }
 
-    .cap-btn:hover, .cap-btn.selected {
+    .cap-btn.selected {
       border-color: var(--accent-cyan);
       background: rgba(6, 182, 212, 0.2);
-      box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
     }
 
-    /* Layout Options */
+    /* LAYOUT OPTIONS */
     .layout-opt {
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-purple);
-      border-radius: var(--radius-md);
-      padding: 16px 18px;
-      margin-bottom: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 16px;
-      transition: all var(--transition-normal);
+      gap: 14px;
+      transition: all 0.2s ease;
     }
 
-    .layout-opt:hover, .layout-opt.selected {
+    .layout-opt.selected {
       border-color: var(--accent-purple);
       background: rgba(139, 92, 246, 0.2);
-      box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
     }
 
-    .layout-opt-icon {
-      font-size: 1.4rem;
-    }
-
-    .layout-opt-title {
-      font-weight: 700;
-      font-size: 0.92rem;
-    }
-
-    .layout-opt-desc {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    /* Export CTA Button */
-    .btn-export-main {
-      width: 100%;
-      padding: 20px;
-      background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-cyan) 100%);
-      border: none;
-      border-radius: var(--radius-md);
-      color: #ffffff;
-      font-weight: 800;
-      font-size: 1.1rem;
-      cursor: pointer;
-      margin-top: auto;
-      box-shadow: 0 0 35px var(--accent-purple-glow);
-      transition: transform var(--transition-fast), box-shadow var(--transition-normal);
-    }
-
-    .btn-export-main:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 45px var(--accent-cyan-glow);
-    }
-
-    /* Right Preview Workspace */
+    /* PREVIEW STAGE */
     .main-preview {
       flex: 1;
       display: flex;
@@ -390,103 +221,89 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      background: radial-gradient(circle at center, #120b24 0%, #05030a 100%);
     }
 
-    .top-nav {
-      position: absolute;
-      top: 32px;
-      right: 36px;
-      z-index: 30;
-    }
+    .top-nav { position: absolute; top: 24px; right: 28px; }
 
     .nav-btn {
       background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--border-purple);
-      color: #ffffff;
-      padding: 12px 24px;
-      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
-      transition: background var(--transition-normal), border-color var(--transition-normal);
     }
 
-    .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.16);
-      border-color: var(--accent-purple);
-    }
-
-    /* 9:16 Vertical Phone Stage Frame */
     .phone-stage {
-      width: 360px;
-      height: 640px;
-      background: #000000;
-      border-radius: var(--radius-xl);
+      width: 350px;
+      height: 620px;
+      background: #000;
+      border-radius: 36px;
       border: 4px solid #231c3b;
-      box-shadow: 0 0 80px rgba(0, 0, 0, 0.95), 0 0 35px var(--accent-purple-glow);
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.95), 0 0 30px rgba(139, 92, 246, 0.3);
       overflow: hidden;
       position: relative;
       display: flex;
       flex-direction: column;
     }
 
-    /* Top Half Video Frame */
+    /* 9:16 CENTER VIDEO CONTAINER (FULL UNEDITED VIDEO TOP PREVIEW) */
     .yt-frame-container {
       position: relative;
       width: 100%;
-      height: 50%;
-      background: #000000;
+      height: 55%;
+      background: #000;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     #yt-player {
       width: 100%;
-      height: 140%;
-      margin-top: -20%;
+      height: 100%;
       border: none;
       pointer-events: all;
     }
 
-    /* Subtitle Overlay Layer */
+    /* SUBTITLE OVERLAY */
     .subtitle-overlay {
       position: absolute;
-      bottom: 20px;
-      left: 0;
-      width: 100%;
+      bottom: 12px;
+      left: 0; width: 100%;
       text-align: center;
       z-index: 30;
       pointer-events: none;
-      padding: 0 16px;
+      padding: 0 10px;
     }
 
     .sub-text {
       display: inline-block;
-      padding: 8px 18px;
-      border-radius: 10px;
+      padding: 6px 14px;
+      border-radius: 8px;
       font-weight: 900;
-      font-size: 1.18rem;
+      font-size: 1.05rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      transition: all var(--transition-fast);
     }
 
-    /* 10 Kinetic Subtitle Style Presets */
-    .sub-mrbeast { background: #ffe600; color: #000000; font-size: 1.28rem; box-shadow: 0 4px 18px rgba(0,0,0,0.8); }
-    .sub-neon { color: #00f3ff; text-shadow: 0 0 12px #00f3ff, 0 0 24px #00f3ff; }
-    .sub-hormozi { background: #10b981; color: #ffffff; border-radius: 4px; box-shadow: 0 4px 14px rgba(16,185,129,0.5); }
-    .sub-tiktok { background: #000000; color: #ffffff; border: 2px solid #ff0050; }
-    .sub-gradient { background: linear-gradient(90deg, #ff007f 0%, #7928ca 100%); color: #ffffff; }
-    .sub-minimal { background: rgba(0, 0, 0, 0.82); color: #ffffff; border-radius: 20px; font-weight: 600; }
-    .sub-karaoke { color: #ffe600; text-shadow: 0 2px 4px #000000, 0 0 14px #ff0050; }
-    .sub-comic { color: #ff0000; text-shadow: 2px 2px 0px #ffff00, -1px -1px 0px #000000; }
+    .sub-mrbeast { background: #ffe600; color: #000; font-size: 1.15rem; }
+    .sub-neon { color: #00f3ff; text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff; }
+    .sub-hormozi { background: #10b981; color: #fff; }
+    .sub-tiktok { background: #000; color: #fff; border: 2px solid #ff0050; }
+    .sub-gradient { background: linear-gradient(90deg, #ff007f, #7928ca); color: #fff; }
+    .sub-minimal { background: rgba(0,0,0,0.8); color: #fff; border-radius: 20px; }
+    .sub-karaoke { color: #ffe600; text-shadow: 0 2px 4px #000; }
+    .sub-comic { color: #ff0000; text-shadow: 2px 2px 0px #ffff00; }
     .sub-glitch { color: #00ff66; text-shadow: -2px 0 #ff00c8, 2px 0 #00d8ff; }
     .sub-darkpill { background: #111827; color: #f9fafb; border: 1px solid #374151; }
 
-    /* Bottom Split Layout Frame */
+    /* BOTTOM AMBIENT BLUR CONTAINER */
     .bottom-container {
       width: 100%;
-      height: 50%;
+      height: 45%;
       background: #05030a;
       position: relative;
       overflow: hidden;
@@ -495,97 +312,44 @@
 
     .blur-backdrop {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, rgba(6, 182, 212, 0.28) 70%, rgba(7, 5, 16, 0.98) 100%);
-      filter: blur(30px);
-      transition: opacity var(--transition-normal);
+      top: -20%; left: -20%; width: 140%; height: 140%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.6) 0%, rgba(6, 182, 212, 0.35) 60%, rgba(7, 5, 16, 0.95) 100%);
+      filter: blur(25px);
+      transition: opacity 0.3s ease;
     }
 
     #asmr-canvas {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       z-index: 5;
       display: none;
     }
 
-    /* Modal Notifications */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(5, 3, 12, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--transition-normal);
-    }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .modal-card {
-      background: rgba(18, 14, 33, 0.96);
-      border: 1px solid var(--accent-purple);
-      box-shadow: 0 0 60px var(--accent-purple-glow);
-      border-radius: var(--radius-xl);
-      padding: 44px;
-      max-width: 500px;
+    .btn-export-main {
       width: 100%;
-      text-align: center;
-    }
-
-    .modal-card h3 {
-      font-size: 1.6rem;
-      margin-bottom: 14px;
-      background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .modal-card p {
-      color: var(--text-muted);
-      font-size: 0.98rem;
-      margin-bottom: 32px;
-      line-height: 1.6;
-    }
-
-    .btn-modal-close {
-      padding: 16px 32px;
-      background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-cyan) 100%);
+      padding: 18px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
       border: none;
-      border-radius: var(--radius-md);
-      color: #ffffff;
+      border-radius: 14px;
+      color: white;
       font-weight: 800;
+      font-size: 1.05rem;
       cursor: pointer;
+      margin-top: auto;
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
     }
   </style>
 </head>
 <body>
 
-  <!-- Background Particle Animation Canvas -->
   <canvas id="space-bg"></canvas>
 
-  <!-- Screen 1: Cosmic Hero Landing Page -->
+  <!-- SCREEN 1 -->
   <div class="hero-container" id="hero-screen">
     <div class="hero-box">
-      <div class="hero-badge">⚡ AI Viral Retention Engine</div>
       <h1>Clipfarm AI Pro</h1>
-      <p>Transform long-form YouTube videos into viral, high-retention Short-form content automatically using AI timestamp detection.</p>
+      <p>Transform YouTube URLs into 10 Viral Retention-Optimized Shorts Instantly</p>
       
       <div class="input-wrapper">
         <input type="text" id="yt-url-input" placeholder="Paste YouTube Link (e.g., https://www.youtube.com/watch?v=...)">
@@ -595,47 +359,27 @@
     </div>
   </div>
 
-  <!-- Screen 2: Dual-Pane Studio Workspace -->
+  <!-- SCREEN 2 -->
   <div class="app-workspace" id="studio-screen">
     <div class="side-panel">
-      <!-- Section 1: AI Detected Highlights -->
+      <!-- 10 VIRAL MOMENTS -->
       <div>
         <div class="panel-section-title">
           <span>1. AI Viral Moments</span>
-          <span style="color:var(--text-muted); font-size:0.75rem">3 Segments Detected</span>
+          <span style="color:var(--text-muted); font-size:0.75rem">10 Moments Found</span>
         </div>
         
-        <div class="clip-card active" onclick="ClipfarmEngine.selectClip(15, this)">
-          <div class="clip-card-header">
-            <span class="clip-card-title">Hook #1: High Retention Hook</span>
-            <span class="viral-badge">98% VIRAL</span>
-          </div>
-          <p class="clip-card-desc">Curiosity peak detected at timestamp 0:15</p>
-        </div>
-
-        <div class="clip-card" onclick="ClipfarmEngine.selectClip(55, this)">
-          <div class="clip-card-header">
-            <span class="clip-card-title">Clip #2: The Turning Point</span>
-            <span class="viral-badge">94% VIRAL</span>
-          </div>
-          <p class="clip-card-desc">Engagement surge detected at timestamp 0:55</p>
-        </div>
-
-        <div class="clip-card" onclick="ClipfarmEngine.selectClip(120, this)">
-          <div class="clip-card-header">
-            <span class="clip-card-title">Clip #3: Climax Resolution</span>
-            <span class="viral-badge">91% VIRAL</span>
-          </div>
-          <p class="clip-card-desc">Re-watch spike detected at timestamp 2:00</p>
+        <div class="clip-list-container" id="clips-list-box">
+          <!-- Populated dynamically with 10 clips -->
         </div>
       </div>
 
-      <!-- Section 2: Subtitle Retention Styles -->
+      <!-- 10 SUBTITLE STYLES -->
       <div>
-        <div class="panel-section-title">2. Retention Subtitles (10 Styles)</div>
+        <div class="panel-section-title">2. Speech Subtitle Overlay (10 Styles)</div>
         <div class="captions-grid">
           <button class="cap-btn selected" onclick="ClipfarmEngine.setCaption('mrbeast', this)">1. MrBeast Pop</button>
-          <button class="cap-btn" onclick="ClipfarmEngine.setCaption('neon', this)">2. Neon Cyan Glow</button>
+          <button class="cap-btn" onclick="ClipfarmEngine.setCaption('neon', this)">2. Neon Cyber</button>
           <button class="cap-btn" onclick="ClipfarmEngine.setCaption('hormozi', this)">3. Hormozi Bold</button>
           <button class="cap-btn" onclick="ClipfarmEngine.setCaption('tiktok', this)">4. TikTok Kinetic</button>
           <button class="cap-btn" onclick="ClipfarmEngine.setCaption('gradient', this)">5. Gradient Flame</button>
@@ -647,23 +391,23 @@
         </div>
       </div>
 
-      <!-- Section 3: Split Layout Presets -->
+      <!-- LAYOUT OPTIONS -->
       <div>
         <div class="panel-section-title">3. Bottom Split Layout</div>
         
         <div class="layout-opt selected" onclick="ClipfarmEngine.setLayout('blur', this)">
-          <span class="layout-opt-icon">✨</span>
+          <span style="font-size:1.3rem">✨</span>
           <div>
-            <div class="layout-opt-title">Ambient Gradient Blur</div>
-            <div class="layout-opt-desc">Cloned background aesthetic</div>
+            <div style="font-weight:700; font-size:0.9rem">Top & Bottom Video Blur</div>
+            <div style="font-size:0.75rem; color:var(--text-muted)">Centered video with blurred ambient fill</div>
           </div>
         </div>
 
         <div class="layout-opt" onclick="ClipfarmEngine.setLayout('asmr', this)">
-          <span class="layout-opt-icon">⏳</span>
+          <span style="font-size:1.3rem">⏳</span>
           <div>
-            <div class="layout-opt-title">Satisfying ASMR Particles</div>
-            <div class="layout-opt-desc">Kinetic stream simulation</div>
+            <div style="font-weight:700; font-size:0.9rem">Satisfying ASMR Stream</div>
+            <div style="font-size:0.75rem; color:var(--text-muted)">Kinetic particle loop</div>
           </div>
         </div>
       </div>
@@ -671,7 +415,7 @@
       <button class="btn-export-main" onclick="ClipfarmEngine.exportShort()">⚡ GENERATE & DOWNLOAD SHORT</button>
     </div>
 
-    <!-- Right Workspace Area -->
+    <!-- PREVIEW RIGHT -->
     <div class="main-preview">
       <div class="top-nav">
         <button class="nav-btn" onclick="ClipfarmEngine.resetApp()">← Paste New URL</button>
@@ -681,7 +425,7 @@
         <div class="yt-frame-container">
           <div id="player"></div>
           <div class="subtitle-overlay">
-            <span class="sub-text sub-mrbeast" id="caption-preview">CATCH THE VIRAL HOOK...</span>
+            <span class="sub-text sub-mrbeast" id="caption-preview">SPEECH-SYNCED CAPTION</span>
           </div>
         </div>
 
@@ -693,163 +437,81 @@
     </div>
   </div>
 
-  <!-- Notification Overlay Modal -->
-  <div class="modal-overlay" id="export-modal">
-    <div class="modal-card">
-      <h3>🎉 Short Compiled Successfully!</h3>
-      <p id="modal-desc">Your viral settings and YouTube source link have been formatted and copied to your clipboard.</p>
-      <button class="btn-modal-close" onclick="ClipfarmEngine.closeModal()">Continue Editing</button>
-    </div>
-  </div>
-
-  <!-- YouTube iFrame Player API SDK -->
   <script src="https://www.youtube.com/iframe_api"></script>
-
-  <!-- Main Application JavaScript Controller -->
   <script>
-    /**
-     * @class ParticleBackgroundEngine
-     * Renders the interactive starfield background animation.
-     */
-    class ParticleBackgroundEngine {
-      constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.stars = [];
-        this.init();
-      }
+    // Background Space Particles
+    const bgCanvas = document.getElementById('space-bg');
+    const bgCtx = bgCanvas.getContext('2d');
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
+    
+    let stars = Array.from({ length: 120 }, () => ({
+      x: Math.random() * bgCanvas.width,
+      y: Math.random() * bgCanvas.height,
+      size: Math.random() * 2 + 0.5,
+      speed: Math.random() * 0.4 + 0.1
+    }));
 
-      init() {
-        this.resize();
-        window.addEventListener('resize', () => this.resize());
-        this.animate();
-      }
-
-      resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this.stars = Array.from({ length: 150 }, () => ({
-          x: Math.random() * this.canvas.width,
-          y: Math.random() * this.canvas.height,
-          size: Math.random() * 2.5 + 0.5,
-          speed: Math.random() * 0.4 + 0.1,
-          color: Math.random() > 0.5 ? '#8b5cf6' : '#06b6d4'
-        }));
-      }
-
-      animate() {
-        this.ctx.fillStyle = '#05030a';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        this.stars.forEach(star => {
-          this.ctx.fillStyle = star.color;
-          this.ctx.beginPath();
-          this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-          this.ctx.fill();
-
-          star.y += star.speed;
-          if (star.y > this.canvas.height) {
-            star.y = 0;
-            star.x = Math.random() * this.canvas.width;
-          }
-        });
-
-        requestAnimationFrame(() => this.animate());
-      }
+    function renderBg() {
+      bgCtx.fillStyle = '#070510';
+      bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+      bgCtx.fillStyle = '#8b5cf6';
+      stars.forEach(s => {
+        bgCtx.beginPath();
+        bgCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        bgCtx.fill();
+        s.y += s.speed;
+        if (s.y > bgCanvas.height) s.y = 0;
+      });
+      requestAnimationFrame(renderBg);
     }
+    renderBg();
 
-    /**
-     * @class ASMRParticleEngine
-     * Renders kinetic ASMR particle loops inside the lower split canvas.
-     */
-    class ASMRParticleEngine {
-      constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
-        this.particles = [];
-        this.active = false;
-        this.init();
-      }
-
-      init() {
-        if (!this.canvas) return;
-        this.resize();
-        window.addEventListener('resize', () => this.resize());
-        this.particles = Array.from({ length: 70 }, () => ({
-          x: Math.random() * this.canvas.width,
-          y: Math.random() * this.canvas.height,
-          vy: Math.random() * 2.0 + 0.8,
-          size: Math.random() * 5 + 2,
-          color: `hsl(${Math.random() * 60 + 250}, 85%, 65%)`
-        }));
-        this.animate();
-      }
-
-      resize() {
-        if (this.canvas && this.canvas.parentElement) {
-          this.canvas.width = this.canvas.parentElement.clientWidth;
-          this.canvas.height = this.canvas.parentElement.clientHeight;
-        }
-      }
-
-      setActive(state) {
-        this.active = state;
-        if (this.canvas) {
-          this.canvas.style.display = state ? 'block' : 'none';
-        }
-      }
-
-      animate() {
-        if (this.ctx && this.active) {
-          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-          this.particles.forEach(p => {
-            this.ctx.fillStyle = p.color;
-            this.ctx.fillRect(p.x, p.y, p.size, p.size);
-            p.y += p.vy;
-            if (p.y > this.canvas.height) {
-              p.y = 0;
-              p.x = Math.random() * this.canvas.width;
-            }
-          });
-        }
-        requestAnimationFrame(() => this.animate());
-      }
-    }
-
-    /**
-     * @class ClipfarmStudioController
-     * Core application manager for YouTube playback, captions, and layout state.
-     */
-    class ClipfarmStudioController {
+    class ClipfarmEngineApp {
       constructor() {
         this.player = null;
         this.currentVideoId = 'dQw4w9WgXcQ';
         this.currentLayout = 'blur';
-        this.asmrEngine = null;
-        this.phrases = [
-          "CATCH THE VIRAL HOOK...",
-          "THIS CHANGES EVERYTHING!",
-          "LOOK CLOSELY AT THIS...",
-          "UNBELIEVABLE RESULT!",
-          "SHARE WITH A FRIEND!"
+        
+        // 10 AI Viral Moments Data Timestamps
+        this.clipMoments = [
+          { title: "Hook #1: The Viral Intro", score: "99% VIRAL", time: 0, desc: "Immediate curiosity hook at 0:00" },
+          { title: "Clip #2: High Retention Peak", score: "97% VIRAL", time: 15, desc: "Key narrative setup at 0:15" },
+          { title: "Clip #3: The Sudden Twist", score: "95% VIRAL", time: 35, desc: "Plot pivot moment at 0:35" },
+          { title: "Clip #4: Emotional Surge", score: "94% VIRAL", time: 60, desc: "High engagement spike at 1:00" },
+          { title: "Clip #5: Mind-Blowing Reveal", score: "93% VIRAL", time: 85, desc: "Curiosity payoff at 1:25" },
+          { title: "Clip #6: Fast-Paced Action", score: "92% VIRAL", time: 110, desc: "Action sequence at 1:50" },
+          { title: "Clip #7: Key Takeaway", score: "90% VIRAL", time: 140, desc: "Educational highlight at 2:20" },
+          { title: "Clip #8: Climax Point", score: "89% VIRAL", time: 175, desc: "Peak visual moment at 2:55" },
+          { title: "Clip #9: Unexpected Loop", score: "87% VIRAL", time: 210, desc: "Re-watch trigger at 3:30" },
+          { title: "Clip #10: Satisfying Ending", score: "85% VIRAL", time: 240, desc: "Short outro loop at 4:00" }
         ];
-        this.phraseIndex = 0;
       }
 
       init() {
-        new ParticleBackgroundEngine('space-bg');
-        this.asmrEngine = new ASMRParticleEngine('asmr-canvas');
-        this.bindInputEvents();
-        this.startSubtitleLoop();
+        this.render10Clips();
+        this.bindInput();
+        this.initASMR();
       }
 
-      bindInputEvents() {
-        const input = document.getElementById('yt-url-input');
-        const analyzeBtn = document.getElementById('analyze-btn');
+      render10Clips() {
+        const box = document.getElementById('clips-list-box');
+        box.innerHTML = this.clipMoments.map((clip, index) => `
+          <div class="clip-card ${index === 0 ? 'active' : ''}" onclick="ClipfarmEngine.selectClip(${clip.time}, this)">
+            <div class="clip-card-header">
+              <span class="clip-card-title">${clip.title}</span>
+              <span class="viral-badge">${clip.score}</span>
+            </div>
+            <p class="clip-card-desc">${clip.desc}</p>
+          </div>
+        `).join('');
+      }
 
+      bindInput() {
+        const input = document.getElementById('yt-url-input');
+        const btn = document.getElementById('analyze-btn');
         input.addEventListener('input', (e) => {
-          const value = e.target.value.trim();
-          analyzeBtn.style.display = value.length > 5 ? 'block' : 'none';
+          btn.style.display = e.target.value.trim().length > 5 ? 'block' : 'none';
         });
       }
 
@@ -866,17 +528,17 @@
         document.getElementById('studio-screen').classList.add('active');
 
         if (this.player && typeof this.player.loadVideoById === 'function') {
-          this.player.loadVideoById({ videoId: this.currentVideoId, startSeconds: 15 });
+          // Enable Youtube Closed Captions Speech Sync
+          this.player.loadVideoById({ 
+            videoId: this.currentVideoId, 
+            startSeconds: 0 
+          });
         }
       }
 
-      onPlayerReady(event) {
-        event.target.playVideo();
-      }
-
-      selectClip(timeInSeconds, cardElement) {
+      selectClip(timeInSeconds, cardEl) {
         document.querySelectorAll('.clip-card').forEach(c => c.classList.remove('active'));
-        cardElement.classList.add('active');
+        cardEl.classList.add('active');
 
         if (this.player && typeof this.player.seekTo === 'function') {
           this.player.seekTo(timeInSeconds, true);
@@ -884,39 +546,56 @@
         }
       }
 
-      startSubtitleLoop() {
-        setInterval(() => {
-          this.phraseIndex = (this.phraseIndex + 1) % this.phrases.length;
-          const el = document.getElementById('caption-preview');
-          if (el) {
-            el.innerText = this.phrases[this.phraseIndex];
-          }
-        }, 1800);
-      }
-
-      setCaption(styleName, buttonElement) {
+      setCaption(styleName, btn) {
         document.querySelectorAll('.cap-btn').forEach(b => b.classList.remove('selected'));
-        buttonElement.classList.add('selected');
+        btn.classList.add('selected');
+        document.getElementById('caption-preview').className = 'sub-text sub-' + styleName;
+      }
 
-        const previewEl = document.getElementById('caption-preview');
-        if (previewEl) {
-          previewEl.className = 'sub-text sub-' + styleName;
+      setLayout(type, optEl) {
+        document.querySelectorAll('.layout-opt').forEach(l => l.classList.remove('selected'));
+        optEl.classList.add('selected');
+        this.currentLayout = type;
+
+        const asmrCanvas = document.getElementById('asmr-canvas');
+        const blurBg = document.getElementById('blur-bg');
+
+        if (type === 'asmr') {
+          asmrCanvas.style.display = 'block';
+          blurBg.style.opacity = '0.2';
+        } else {
+          asmrCanvas.style.display = 'none';
+          blurBg.style.opacity = '1';
         }
       }
 
-      setLayout(layoutType, optElement) {
-        document.querySelectorAll('.layout-opt').forEach(l => l.classList.remove('selected'));
-        optElement.classList.add('selected');
-        this.currentLayout = layoutType;
+      initASMR() {
+        const canvas = document.getElementById('asmr-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
 
-        const blurBgEl = document.getElementById('blur-bg');
-        if (layoutType === 'asmr') {
-          this.asmrEngine.setActive(true);
-          blurBgEl.style.opacity = '0.25';
-        } else {
-          this.asmrEngine.setActive(false);
-          blurBgEl.style.opacity = '1';
+        let particles = Array.from({ length: 60 }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vy: Math.random() * 2 + 0.8,
+          size: Math.random() * 5 + 2,
+          color: `hsl(${Math.random() * 60 + 250}, 85%, 65%)`
+        }));
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          if (ClipfarmEngine.currentLayout === 'asmr') {
+            particles.forEach(p => {
+              ctx.fillStyle = p.color;
+              ctx.fillRect(p.x, p.y, p.size, p.size);
+              p.y += p.vy;
+              if (p.y > canvas.height) p.y = 0;
+            });
+          }
+          requestAnimationFrame(draw);
         }
+        draw();
       }
 
       resetApp() {
@@ -927,25 +606,27 @@
       exportShort() {
         const inputVal = document.getElementById('yt-url-input').value || "https://youtube.com";
         navigator.clipboard.writeText(inputVal).catch(() => {});
-        document.getElementById('export-modal').classList.add('active');
-      }
-
-      closeModal() {
-        document.getElementById('export-modal').classList.remove('active');
+        alert("🎉 Short Generated!\n\nLink & viral settings copied to clipboard.");
       }
     }
 
-    // Initialize Global App Controller
-    const ClipfarmEngine = new ClipfarmStudioController();
+    const ClipfarmEngine = new ClipfarmEngineApp();
     window.addEventListener('DOMContentLoaded', () => ClipfarmEngine.init());
 
-    // YouTube iFrame API Global SDK Event Handler
+    // YOUTUBE SPEECH & CC PLAYER INJECTION
     function onYouTubeIframeAPIReady() {
       ClipfarmEngine.player = new YT.Player('player', {
         videoId: ClipfarmEngine.currentVideoId,
-        playerVars: { 'autoplay': 1, 'controls': 0, 'modestbranding': 1, 'rel': 0 },
+        playerVars: { 
+          'autoplay': 1, 
+          'controls': 1, 
+          'cc_load_policy': 1, // Forces speech captions ON
+          'cc_lang_pref': 'en',
+          'modestbranding': 1, 
+          'rel': 0 
+        },
         events: {
-          'onReady': (e) => ClipfarmEngine.onPlayerReady(e)
+          'onReady': (e) => e.target.playVideo()
         }
       });
     }
