@@ -1,847 +1,196 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-[#070510] text-gray-100 antialiased selection:bg-purple-500 selection:text-white">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clipfarm AI - Viral Short Generator</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
-                    colors: {
-                        cosmic: {
-                            bg: '#070510',
-                            card: 'rgba(21, 15, 38, 0.75)',
-                            border: 'rgba(139, 92, 246, 0.25)',
-                            accent: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            pink: '#ec4899',
-                            glow: 'rgba(139, 92, 246, 0.4)'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #070510;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2a2442;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #8b5cf6;
-        }
-
-        /* Glassmorphism Card Effect */
-        .glass-panel {
-            background: rgba(20, 15, 38, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(139, 92, 246, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 12px 0 rgba(139, 92, 246, 0.15);
-        }
-
-        .glass-hero {
-            background: rgba(18, 12, 33, 0.82);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(139, 92, 246, 0.4);
-            box-shadow: 0 0 50px rgba(139, 92, 246, 0.25), inset 0 0 20px rgba(6, 182, 212, 0.15);
-        }
-
-        /* Kinetic Caption Animations */
-        @keyframes capPop {
-            0% { transform: scale(0.8) translateY(8px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
-        }
-        .anim-pop { animation: capPop 0.18s ease-out forwards; }
-
-        .neon-text-glow {
-            text-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4, 0 0 30px #8b5cf6;
-        }
-
-        .flame-gradient {
-            background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
-</head>
-<body class="h-full flex flex-col font-sans overflow-hidden select-none bg-[#070510] text-gray-100">
-
-    <!-- BACKGROUND COSMIC CANVAS WITH FLOATING STARS -->
-    <canvas id="spaceCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
-
-    <!-- HEADER / BRAND BAR -->
-    <header class="h-16 border-b border-cosmic-border px-6 flex items-center justify-between shrink-0 z-20 relative bg-black/40 backdrop-blur-md">
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="resetToLanding()">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cosmic-accent via-purple-600 to-cosmic-cyan flex items-center justify-center shadow-lg shadow-cosmic-accent/30">
-                <i class="fa-solid fa-bolt text-white text-lg"></i>
-            </div>
-            <div>
-                <span class="font-black text-xl tracking-wider text-white">CLIPFARM<span class="text-cosmic-accent">.AI</span></span>
-                <span class="text-[10px] bg-cosmic-accent/20 text-cosmic-cyan font-bold px-2 py-0.5 rounded-full border border-cosmic-accent/30 ml-2">PRO VIRAL ENGINE</span>
-            </div>
-        </div>
-
-        <div id="headerActions" class="hidden flex items-center space-x-3">
-            <button onclick="resetToLanding()" class="px-3.5 py-1.5 rounded-xl bg-cosmic-card border border-cosmic-border hover:border-cosmic-accent text-xs font-semibold text-gray-300 hover:text-white transition-all flex items-center space-x-2">
-                <i class="fa-solid fa-arrow-left"></i><span>New URL</span>
-            </button>
-            <button onclick="triggerGenerateAndDownload()" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-cosmic-accent to-cosmic-cyan text-white text-xs font-bold shadow-lg shadow-cosmic-accent/30 hover:opacity-95 transition-all flex items-center space-x-2">
-                <i class="fa-solid fa-download"></i><span>Generate & Export</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- SCREEN 1: LANDING PAGE (CENTERS COSMIC HERO BOX) -->
-    <div id="landingScreen" class="flex-1 flex flex-col items-center justify-center p-4 relative z-10">
-        <div class="w-full max-w-xl glass-hero rounded-3xl p-8 sm:p-10 text-center space-y-6 relative overflow-hidden transition-all duration-500">
-            
-            <!-- Ambient Glow Effect behind header -->
-            <div class="absolute -top-12 -left-12 w-40 h-40 bg-cosmic-accent/30 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-cosmic-cyan/30 rounded-full blur-3xl pointer-events-none"></div>
-
-            <!-- Title & Subtitle -->
-            <div class="space-y-2">
-                <div class="inline-flex items-center space-x-2 bg-cosmic-accent/10 border border-cosmic-accent/30 px-3.5 py-1 rounded-full text-xs font-semibold text-cosmic-cyan mb-2">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i><span>100% Free AI Short Extractor</span>
-                </div>
-                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Paste your link (YouTube)</h1>
-                <p class="text-xs sm:text-sm text-gray-400">Turn any long video into retention-maximized 9:16 Shorts with viral layout splits and captions.</p>
-            </div>
-
-            <!-- Input Box Field -->
-            <div class="space-y-4">
-                <div class="relative flex items-center">
-                    <i class="fa-brands fa-youtube absolute left-4 text-red-500 text-xl"></i>
-                    <input type="text" id="youtubeUrl" oninput="handleUrlInput(this.value)" placeholder="https://www.youtube.com/watch?v=sample..." class="w-full bg-black/60 border-2 border-cosmic-border rounded-2xl py-4 pl-12 pr-4 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cosmic-accent focus:ring-4 focus:ring-cosmic-accent/20 transition-all font-mono">
-                </div>
-
-                <!-- Dynamic Analyze Button -->
-                <div id="analyzeBtnContainer" class="hidden transition-all duration-300">
-                    <button onclick="startAnalysis()" id="analyzeBtn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-cosmic-accent via-purple-600 to-cosmic-cyan text-white text-sm font-extrabold tracking-wider shadow-2xl shadow-cosmic-accent/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-3">
-                        <i class="fa-solid fa-microchip text-lg"></i>
-                        <span>ANALYZE VIDEO FOR VIRAL MOMENTS</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Quick Preset Samples -->
-            <div class="pt-2 border-t border-cosmic-border/40 flex items-center justify-center space-x-3 text-xs text-gray-400">
-                <span>Or try sample link:</span>
-                <button onclick="fillSampleUrl()" class="text-cosmic-cyan hover:underline font-semibold flex items-center space-x-1">
-                    <i class="fa-solid fa-play text-[10px]"></i><span>MrBeast Podcast Scene</span>
-                </button>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- SCREEN 2: MAIN DASHBOARD STUDIO VIEW (Hidden by default) -->
-    <div id="dashboardScreen" class="flex-1 flex overflow-hidden hidden z-10 relative">
-        
-        <!-- LEFT SIDE PANEL (CONTROL & VIRAL ANALYSIS) -->
-        <aside class="w-full lg:w-[480px] glass-panel border-r border-cosmic-border flex flex-col shrink-0 overflow-y-auto p-4 space-y-6">
-            
-            <!-- CATEGORY A: VIRAL MOMENTS DETECTED -->
-            <section class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xs font-bold text-gray-200 tracking-wider uppercase flex items-center space-x-2">
-                        <i class="fa-solid fa-chart-line text-cosmic-cyan"></i><span>1. AI Viral Highlights</span>
-                    </h2>
-                    <span class="text-[10px] bg-green-500/20 text-green-400 font-extrabold px-2 py-0.5 rounded border border-green-500/30">3 Clips Extracted</span>
-                </div>
-
-                <div class="space-y-2" id="viralClipsList">
-                    <!-- Clip Item 1 -->
-                    <div onclick="selectClipSegment(0)" id="clip-0" class="clip-card p-3 rounded-2xl bg-cosmic-accent/20 border-2 border-cosmic-accent cursor-pointer transition-all hover:bg-cosmic-accent/30">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-extrabold text-white">Clip #1: The Mind Bending Hook</span>
-                            <span class="text-[10px] font-black bg-green-500 text-black px-2 py-0.5 rounded-full shadow">97% VIRAL PROBABILITY</span>
-                        </div>
-                        <p class="text-[11px] text-gray-300 line-clamp-2 leading-relaxed mb-2">"Did you know that in 1962, a single radar glitch almost triggered World War 3? A computer reported nuclear missiles..."</p>
-                        <div class="flex items-center space-x-3 text-[10px] text-gray-400 font-semibold">
-                            <span><i class="fa-solid fa-clock text-cosmic-cyan mr-1"></i>High Watch Time</span>
-                            <span><i class="fa-solid fa-fire text-orange-400 mr-1"></i>Curiosity Peak</span>
-                            <span><i class="fa-solid fa-stopwatch mr-1"></i>01:14 - 02:05</span>
-                        </div>
-                    </div>
-
-                    <!-- Clip Item 2 -->
-                    <div onclick="selectClipSegment(1)" id="clip-1" class="clip-card p-3 rounded-2xl bg-black/40 border border-cosmic-border cursor-pointer transition-all hover:border-cosmic-accent/50">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-bold text-gray-300">Clip #2: The Unexplained Plot Twist</span>
-                            <span class="text-[10px] font-black bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">92% VIRAL PROBABILITY</span>
-                        </div>
-                        <p class="text-[11px] text-gray-400 line-clamp-2 leading-relaxed mb-2">"To this day scientists still have no explanation for why the satellite frequency repeated every 16 days..."</p>
-                        <div class="flex items-center space-x-3 text-[10px] text-gray-500 font-medium">
-                            <span><i class="fa-solid fa-clock mr-1"></i>Medium Retention</span>
-                            <span><i class="fa-solid fa-stopwatch mr-1"></i>04:30 - 05:12</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CATEGORY B: 10 SCIENTIFIC KINETIC CAPTION PRESETS -->
-            <section class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xs font-bold text-gray-200 tracking-wider uppercase flex items-center space-x-2">
-                        <i class="fa-solid fa-closed-captioning text-yellow-400"></i><span>2. Retention Subtitle Styles (10)</span>
-                    </h2>
-                    <span class="text-[10px] text-gray-400">Word-Sync Enabled</span>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2">
-                    <!-- Preset 1 -->
-                    <button onclick="setCaptionPreset(0)" id="capPreset-0" class="cap-btn p-2.5 rounded-xl border-2 border-cosmic-accent bg-cosmic-card text-left transition-all">
-                        <div class="text-[11px] font-black text-yellow-400 uppercase tracking-wide">1. MrBeast Pop</div>
-                        <div class="text-[9px] text-gray-400">Bold yellow + black stroke</div>
-                    </button>
-                    <!-- Preset 2 -->
-                    <button onclick="setCaptionPreset(1)" id="capPreset-1" class="cap-btn p-2.5 rounded-xl border border-cosmic-border bg-black/40 text-left transition-all hover:border-cosmic-accent">
-                        <div class="text-[11px] font-black text-cyan-300 neon-text-glow uppercase tracking-wide">2. Neon Cyber Glow</div>
-                        <div class="text-[9px] text-gray-400">Futuristic glow aura</div>
-                    </button>
-                    <!-- Preset 3 -->
-                    <button onclick="setCaptionPreset(2)" id="capPreset-2" class="cap-btn p-2.5 rounded-xl border border-cosmic-border bg-black/40 text-left transition-all hover:border-cosmic-accent">
-                        <div class="text-[11px] font-black text-green-400 bg-green-950/80 px-1 rounded inline-block">3. Hormozi Bold</div>
-                        <div class="text-[9px] text-gray-400">Active green highlight box</div>
-                    </button>
-                    <!-- Preset 4 -->
-                    <button onclick="setCaptionPreset(3)" id="capPreset-3" class="cap-btn p-2.5 rounded-xl border border-cosmic-border bg-black/40 text-left transition-all hover:border-cosmic-accent">
-                        <div class="text-[11px] font-black text-pink-400 uppercase tracking-wider">4. TikTok Kinetic</div>
-                        <div class="text-[9px] text-gray-400">Word-by-word scale bounce</div>
-                    </button>
-                    <!-- Preset 5 -->
-                    <button onclick="setCaptionPreset(4)" id="capPreset-4" class="cap-btn p-2.5 rounded-xl border border-cosmic-border bg-black/40 text-left transition-all hover:border-cosmic-accent">
-                        <div class="text-[11px] font-black flame-gradient uppercase">5. Gradient Flame</div>
-                        <div class="text-[9px] text-gray-400">Orange purple gradient shift</div>
-                    </button>
-                    <!-- Preset 6 -->
-                    <button onclick="setCaptionPreset(5)" id="capPreset-5" class="cap-btn p-2.5 rounded-xl border border-cosmic-border bg-black/40 text-left transition-all hover:border-cosmic-accent">
-                        <div class="text-[11px] font-black text-white bg-black/80 px-1 rounded">6. Minimalist Clean</div>
-                        <div class="text-[9px] text-gray-400">Helvetica dark pill box</div>
-                    </button>
-                    <!-- Preset 7 -->
-                    <button onclick="setCaptionPreset(6)" id="capPreset-6" class="cap-btn p-2.5 rounded-xl border border-cosmic-border bg-black/40 text-left transition-all hover:border-cosmic-accent">
-                        <div class="text-[11px] font-black text-yellow-300">7. Karaoke Glow</div>
-                        <div class="text-[9px] text-gray-400">Gliding word highlight bar</div>
-                    </button>
-                    <!-- Preset 8 -->
-                    <button onclick="setCaptionPreset(7)" id="capPreset-7" class="cap-btn p-2.5 rounded-xl border border-cosmic-border bg-black/40 text-left transition-all hover:border-cosmic-accent">
-                        <div class="text-[11px] font-black text-red-500 italic">8. Comic Retro</div>
-                        <div class="text-[9px] text-gray-400">Red yellow drop shadow</div>
-                    </button>
-                    <!-- Preset 9 -->
-                    <button onclick="setCaptionPreset(8)" id="capPreset-8" class="cap-btn p-2.5 rounded-xl border border-cosmic-border bg-black/40 text-left transition-all hover:border-cosmic-accent">
-                        <div class="text-[11px] font-black text-purple-400 tracking-widest">9. Glitch Cyber</div>
-                        <div class="text-[9px] text-gray-400">Digital glitch pulse</div>
-                    </button>
-                    <!-- Preset 10 -->
-                    <button onclick="setCaptionPreset(9)" id="capPreset-9" class="cap-btn p-2.5 rounded-xl border border-cosmic-border bg-black/40 text-left transition-all hover:border-cosmic-accent">
-                        <div class="text-[11px] font-black text-white bg-gray-900 border border-gray-700 px-1 rounded">10. High-Contrast Pill</div>
-                        <div class="text-[9px] text-gray-400">Max legibility dark frame</div>
-                    </button>
-                </div>
-            </section>
-
-            <!-- CATEGORY C: VIRAL BOTTOM SPLIT LAYOUTS -->
-            <section class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xs font-bold text-gray-200 tracking-wider uppercase flex items-center space-x-2">
-                        <i class="fa-solid fa-gamepad text-cosmic-pink"></i><span>3. Gameplay / Split Screen Layout</span>
-                    </h2>
-                    <span class="text-[10px] text-cosmic-cyan">Live Sync Canvas</span>
-                </div>
-
-                <div class="space-y-2">
-                    <!-- Option 1: Subway Surfers -->
-                    <button onclick="setLayoutPreset('subway')" id="layoutBtn-subway" class="layout-btn w-full p-3 rounded-2xl bg-cosmic-card border-2 border-cosmic-accent flex items-center justify-between transition-all">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black text-sm">🏃</div>
-                            <div class="text-left">
-                                <div class="text-xs font-bold text-white">Subway Surfers Runner Loop</div>
-                                <div class="text-[10px] text-gray-400">Simulated dynamic gameplay track</div>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-circle-check text-cosmic-accent text-sm"></i>
-                    </button>
-
-                    <!-- Option 2: Minecraft Parkour -->
-                    <button onclick="setLayoutPreset('minecraft')" id="layoutBtn-minecraft" class="layout-btn w-full p-3 rounded-2xl bg-black/40 border border-cosmic-border flex items-center justify-between transition-all hover:border-cosmic-accent">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-xl bg-green-500/20 text-green-400 flex items-center justify-center font-black text-sm">🎮</div>
-                            <div class="text-left">
-                                <div class="text-xs font-bold text-white">Minecraft Parkour Loop</div>
-                                <div class="text-[10px] text-gray-400">3D block movement canvas rendering</div>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-circle-check text-gray-600 text-sm"></i>
-                    </button>
-
-                    <!-- Option 3: Satisfying Sand -->
-                    <button onclick="setLayoutPreset('sand')" id="layoutBtn-sand" class="layout-btn w-full p-3 rounded-2xl bg-black/40 border border-cosmic-border flex items-center justify-between transition-all hover:border-cosmic-accent">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center font-black text-sm">⏳</div>
-                            <div class="text-left">
-                                <div class="text-xs font-bold text-white">Satisfying ASMR Sand Slice</div>
-                                <div class="text-[10px] text-gray-400">Kinetic slicing visual loop</div>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-circle-check text-gray-600 text-sm"></i>
-                    </button>
-
-                    <!-- Option 4: Top/Bottom Dynamic Blur -->
-                    <button onclick="setLayoutPreset('blur')" id="layoutBtn-blur" class="layout-btn w-full p-3 rounded-2xl bg-black/40 border border-cosmic-border flex items-center justify-between transition-all hover:border-cosmic-accent">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-black text-sm">💧</div>
-                            <div class="text-left">
-                                <div class="text-xs font-bold text-white">Top & Bottom Cloned Blur</div>
-                                <div class="text-[10px] text-gray-400">Mirrored ambient background blur</div>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-circle-check text-gray-600 text-sm"></i>
-                    </button>
-                </div>
-            </section>
-
-            <!-- ACTION FOOTER BUTTON -->
-            <div class="pt-4 border-t border-cosmic-border space-y-2">
-                <button onclick="triggerGenerateAndDownload()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-cosmic-accent via-purple-600 to-cosmic-cyan text-white text-xs font-extrabold tracking-wider shadow-xl shadow-cosmic-accent/30 hover:opacity-95 transition-all flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-bolt"></i><span>GENERATE & EXPORT SHORT FILE</span>
-                </button>
-                <p id="exportFeedback" class="text-[10px] text-center text-cosmic-cyan hidden">
-                    <i class="fa-solid fa-check mr-1"></i>Link copied to clipboard & short snapshot prepared!
-                </p>
-            </div>
-
-        </aside>
-
-        <!-- RIGHT MAIN PREVIEW AREA (BIGGER THAN SIDE PANEL) -->
-        <main class="flex-1 flex flex-col justify-between items-center p-6 bg-black/60 relative overflow-hidden">
-            
-            <!-- Floating Player Status Bar -->
-            <div class="bg-cosmic-card/90 backdrop-blur-md px-5 py-2 rounded-full border border-cosmic-border flex items-center space-x-4 text-xs z-10 shadow-2xl">
-                <span class="flex items-center space-x-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
-                    <span class="font-extrabold text-white tracking-wide">9:16 VERTICAL PREVIEW</span>
-                </span>
-                <span class="text-gray-600">|</span>
-                <span id="videoTimer" class="font-mono text-cosmic-cyan font-bold">00:14 / 00:51</span>
-                <span class="text-gray-600">|</span>
-                <span id="activeLayoutBadge" class="text-[10px] bg-cosmic-accent/30 text-white px-2 py-0.5 rounded font-bold uppercase">SUBWAY SURFERS</span>
-            </div>
-
-            <!-- Main Canvas Container Frame -->
-            <div class="flex-1 flex items-center justify-center my-4 w-full max-h-[calc(100vh-220px)]">
-                <div id="playerContainer" class="relative aspect-[9/16] h-full max-h-full rounded-3xl overflow-hidden border-2 border-cosmic-border shadow-2xl bg-black flex flex-col items-center justify-center group">
-                    
-                    <!-- Real-Time Render Canvas -->
-                    <canvas id="mainVideoCanvas" class="w-full h-full object-cover"></canvas>
-
-                    <!-- Subtitle DOM Layer (Overlaying Canvas for Crisp Rendering) -->
-                    <div id="subtitleOverlay" class="absolute inset-x-4 pointer-events-none flex flex-col items-center justify-center text-center transition-all duration-150" style="bottom: 36%;">
-                        <div id="subtitleBox" class="font-black text-2xl uppercase tracking-wider px-3 py-1.5 rounded-xl drop-shadow-2xl anim-pop">
-                            DID YOU KNOW THAT IN 1962
-                        </div>
-                    </div>
-
-                    <!-- Center Play/Pause Trigger Button -->
-                    <button onclick="toggleVideoPlayback()" class="absolute w-16 h-16 rounded-full bg-cosmic-accent/90 text-white flex items-center justify-center text-2xl shadow-2xl hover:scale-110 transition-all opacity-0 group-hover:opacity-100">
-                        <i id="centerPlayIcon" class="fa-solid fa-play ml-1"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Player Scrubbing Controls Bar -->
-            <div class="w-full max-w-lg glass-panel rounded-2xl p-3 flex items-center justify-between space-x-4 shadow-2xl shrink-0 z-10">
-                <button onclick="toggleVideoPlayback()" id="playPauseBtn" class="w-10 h-10 rounded-xl bg-cosmic-accent text-white flex items-center justify-center text-sm shadow hover:opacity-90 transition-all shrink-0">
-                    <i id="playIcon" class="fa-solid fa-play"></i>
-                </button>
-
-                <!-- Scrubber Progress Bar -->
-                <div class="flex-1 flex flex-col space-y-1">
-                    <input type="range" id="videoScrubber" min="0" max="100" value="25" oninput="scrubVideo(this.value)" class="w-full accent-cosmic-accent cursor-pointer h-1.5 bg-gray-800 rounded-lg">
-                    <div class="flex justify-between text-[10px] font-mono text-gray-400">
-                        <span id="currentTimeText">00:14</span>
-                        <span id="totalDurationText">00:51</span>
-                    </div>
-                </div>
-
-                <button onclick="restartPlayback()" class="p-2 rounded-xl bg-black/40 border border-cosmic-border hover:border-cosmic-accent text-gray-300 hover:text-white text-xs">
-                    <i class="fa-solid fa-rotate-left"></i>
-                </button>
-            </div>
-
-        </main>
-
-    </div>
-
-    <!-- JAVASCRIPT APP LOGIC -->
-    <script>
-        // GLOBAL APP STATE
-        const appState = {
-            analyzed: false,
-            url: '',
-            isPlaying: false,
-            currentTime: 14,
-            duration: 51,
-            selectedClipIdx: 0,
-            selectedCapStyle: 0,
-            selectedLayout: 'subway',
-            words: ["DID", "YOU", "KNOW", "THAT", "IN", "1962,", "A", "SINGLE", "RADAR", "GLITCH", "ALMOST", "TRIGGERED", "WORLD", "WAR", "3?"],
-            currentWordIdx: 0,
-            animTime: 0
-        };
-
-        let spaceCanvas, spaceCtx;
-        let videoCanvas, videoCtx;
-        let starParticles = [];
-
-        window.onload = () => {
-            // Space Floating Stars Canvas Setup
-            spaceCanvas = document.getElementById('spaceCanvas');
-            spaceCtx = spaceCanvas.getContext('2d');
-            resizeSpaceCanvas();
-            initStars();
-
-            // Main Video Canvas Setup
-            videoCanvas = document.getElementById('mainVideoCanvas');
-            videoCtx = videoCanvas.getContext('2d');
-            videoCanvas.width = 720;
-            videoCanvas.height = 1280;
-
-            window.addEventListener('resize', resizeSpaceCanvas);
-
-            // Speech Synthesis setup
-            if (window.speechSynthesis) {
-                window.speechSynthesis.onvoiceschanged = () => {};
-            }
-
-            // Start Main Render Loops
-            requestAnimationFrame(renderSpaceBackground);
-            requestAnimationFrame(renderVideoCanvasLoop);
-        };
-
-        // COSMIC BACKGROUND STARS ANIMATION
-        function resizeSpaceCanvas() {
-            spaceCanvas.width = window.innerWidth;
-            spaceCanvas.height = window.innerHeight;
-        }
-
-        function initStars() {
-            starParticles = [];
-            for (let i = 0; i < 120; i++) {
-                starParticles.push({
-                    x: Math.random() * window.innerWidth,
-                    y: Math.random() * window.innerHeight,
-                    radius: Math.random() * 2 + 0.5,
-                    color: Math.random() > 0.5 ? '#8b5cf6' : '#06b6d4',
-                    alpha: Math.random(),
-                    speed: Math.random() * 0.4 + 0.1
-                });
-            }
-        }
-
-        function renderSpaceBackground() {
-            spaceCtx.clearRect(0, 0, spaceCanvas.width, spaceCanvas.height);
-
-            // Deep cosmic gradient
-            const grad = spaceCtx.createLinearGradient(0, 0, spaceCanvas.width, spaceCanvas.height);
-            grad.addColorStop(0, '#070510');
-            grad.addColorStop(0.5, '#0f0822');
-            grad.addColorStop(1, '#160a2e');
-            spaceCtx.fillStyle = grad;
-            spaceCtx.fillRect(0, 0, spaceCanvas.width, spaceCanvas.height);
-
-            // Floating stars
-            starParticles.forEach(star => {
-                star.y -= star.speed;
-                if (star.y < 0) star.y = spaceCanvas.height;
-
-                star.alpha += (Math.random() - 0.5) * 0.02;
-                if (star.alpha < 0.2) star.alpha = 0.2;
-                if (star.alpha > 1) star.alpha = 1;
-
-                spaceCtx.save();
-                spaceCtx.globalAlpha = star.alpha;
-                spaceCtx.fillStyle = star.color;
-                spaceCtx.beginPath();
-                spaceCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                spaceCtx.fill();
-                spaceCtx.restore();
-            });
-
-            requestAnimationFrame(renderSpaceBackground);
-        }
-
-        // LANDING PAGE & URL DETECTION
-        function handleUrlInput(val) {
-            appState.url = val.trim();
-            const btnContainer = document.getElementById('analyzeBtnContainer');
-            if (appState.url.length > 5) {
-                btnContainer.classList.remove('hidden');
-            } else {
-                btnContainer.classList.add('hidden');
-            }
-        }
-
-        function fillSampleUrl() {
-            const sample = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-            document.getElementById('youtubeUrl').value = sample;
-            handleUrlInput(sample);
-        }
-
-        function startAnalysis() {
-            const btn = document.getElementById('analyzeBtn');
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-lg"></i><span>ANALYZING VIRAL MOMENTS...</span>`;
-
-            setTimeout(() => {
-                document.getElementById('landingScreen').classList.add('hidden');
-                document.getElementById('dashboardScreen').classList.remove('hidden');
-                document.getElementById('headerActions').classList.remove('hidden');
-                appState.analyzed = true;
-                btn.innerHTML = `<i class="fa-solid fa-microchip text-lg"></i><span>ANALYZE VIDEO FOR VIRAL MOMENTS</span>`;
-                startVideoSimulation();
-            }, 1200);
-        }
-
-        function resetToLanding() {
-            document.getElementById('dashboardScreen').classList.add('hidden');
-            document.getElementById('headerActions').classList.add('hidden');
-            document.getElementById('landingScreen').classList.remove('hidden');
-            stopVideoSimulation();
-        }
-
-        // CLIP SELECTION
-        function selectClipSegment(idx) {
-            appState.selectedClipIdx = idx;
-            document.querySelectorAll('.clip-card').forEach((card, i) => {
-                if (i === idx) {
-                    card.className = "clip-card p-3 rounded-2xl bg-cosmic-accent/20 border-2 border-cosmic-accent cursor-pointer transition-all hover:bg-cosmic-accent/30";
-                } else {
-                    card.className = "clip-card p-3 rounded-2xl bg-black/40 border border-cosmic-border cursor-pointer transition-all hover:border-cosmic-accent/50";
-                }
-            });
-
-            if (idx === 0) {
-                appState.words = ["DID", "YOU", "KNOW", "THAT", "IN", "1962,", "A", "SINGLE", "RADAR", "GLITCH", "ALMOST", "TRIGGERED", "WORLD", "WAR", "3?"];
-            } else {
-                appState.words = ["SCIENTISTS", "STILL", "HAVE", "NO", "EXPLANATION", "FOR", "WHY", "THE", "SATELLITE", "FREQUENCY", "REPEATED."];
-            }
-            appState.currentWordIdx = 0;
-            updateSubtitles();
-        }
-
-        // CAPTION STYLE SELECTION (10 SCIENTIFIC PRESETS)
-        function setCaptionPreset(idx) {
-            appState.selectedCapStyle = idx;
-            document.querySelectorAll('.cap-btn').forEach((btn, i) => {
-                if (i === idx) {
-                    btn.classList.replace('border-cosmic-border', 'border-cosmic-accent');
-                    btn.classList.add('bg-cosmic-card');
-                } else {
-                    btn.classList.replace('border-cosmic-accent', 'border-cosmic-border');
-                    btn.classList.remove('bg-cosmic-card');
-                }
-            });
-            updateSubtitles();
-        }
-
-        function updateSubtitles() {
-            const subBox = document.getElementById('subtitleBox');
-            const word = appState.words[appState.currentWordIdx] || appState.words[0];
-            const nextWord = appState.words[appState.currentWordIdx + 1] || "";
-            
-            subBox.innerText = `${word} ${nextWord}`.toUpperCase();
-
-            // Reset Classes
-            subBox.className = "font-black text-2xl uppercase tracking-wider px-3 py-1.5 rounded-xl drop-shadow-2xl anim-pop transition-all ";
-
-            switch(appState.selectedCapStyle) {
-                case 0: // MrBeast Pop
-                    subBox.className += "text-yellow-400 bg-black/80 border-2 border-yellow-400";
-                    break;
-                case 1: // Neon Cyan Glow
-                    subBox.className += "text-cyan-300 neon-text-glow bg-black/40";
-                    break;
-                case 2: // Hormozi Bold
-                    subBox.className += "text-green-400 bg-green-950/90 border border-green-500";
-                    break;
-                case 3: // TikTok Kinetic
-                    subBox.className += "text-pink-400 bg-purple-950/90 border-2 border-pink-500";
-                    break;
-                case 4: // Gradient Flame
-                    subBox.className += "flame-gradient bg-black/80 border border-orange-500/50";
-                    break;
-                case 5: // Minimalist Clean
-                    subBox.className += "text-white bg-black/90 rounded-lg px-4";
-                    break;
-                case 6: // Karaoke Glow
-                    subBox.className += "text-yellow-300 bg-yellow-950/80 border border-yellow-400";
-                    break;
-                case 7: // Comic Retro
-                    subBox.className += "text-yellow-400 italic bg-red-700/90 border-2 border-yellow-400";
-                    break;
-                case 8: // Glitch Cyber
-                    subBox.className += "text-purple-300 bg-indigo-950/90 border border-cyan-400";
-                    break;
-                case 9: // High-Contrast Dark Pill
-                    subBox.className += "text-white bg-gray-950 border-2 border-gray-700";
-                    break;
-            }
-        }
-
-        // LAYOUT PRESET SELECTION
-        function setLayoutPreset(layoutKey) {
-            appState.selectedLayout = layoutKey;
-            document.querySelectorAll('.layout-btn').forEach(btn => {
-                btn.className = "layout-btn w-full p-3 rounded-2xl bg-black/40 border border-cosmic-border flex items-center justify-between transition-all hover:border-cosmic-accent";
-                btn.querySelector('.fa-circle-check').className = "fa-solid fa-circle-check text-gray-600 text-sm";
-            });
-
-            const activeBtn = document.getElementById(`layoutBtn-${layoutKey}`);
-            activeBtn.className = "layout-btn w-full p-3 rounded-2xl bg-cosmic-card border-2 border-cosmic-accent flex items-center justify-between transition-all";
-            activeBtn.querySelector('.fa-circle-check').className = "fa-solid fa-circle-check text-cosmic-accent text-sm";
-
-            document.getElementById('activeLayoutBadge').innerText = layoutKey.toUpperCase();
-        }
-
-        // VIDEO PREVIEW CANVAS ENGINE
-        function renderVideoCanvasLoop() {
-            appState.animTime += 0.04;
-            const w = videoCanvas.width;
-            const h = videoCanvas.height;
-
-            videoCtx.clearRect(0, 0, w, h);
-
-            if (appState.analyzed) {
-                // TOP HALF: YouTube Speaker Scene Simulation
-                renderTopVideoFrame(videoCtx, 0, 0, w, h / 2, appState.animTime);
-
-                // BOTTOM HALF: Selected Layout Simulation
-                renderBottomLayoutFrame(videoCtx, 0, h / 2, w, h / 2, appState.animTime);
-
-                // Divider Line
-                videoCtx.strokeStyle = '#8b5cf6';
-                videoCtx.lineWidth = 6;
-                videoCtx.beginPath();
-                videoCtx.moveTo(0, h / 2);
-                videoCtx.lineTo(w, h / 2);
-                videoCtx.stroke();
-            }
-
-            requestAnimationFrame(renderVideoCanvasLoop);
-        }
-
-        function renderTopVideoFrame(ctx, x, y, w, h, time) {
-            // Speaker Backdrop
-            const grad = ctx.createLinearGradient(x, y, w, h);
-            grad.addColorStop(0, '#1a1033');
-            grad.addColorStop(1, '#090514');
-            ctx.fillStyle = grad;
-            ctx.fillRect(x, y, w, h);
-
-            // Animated Audio Equalizer Waveform behind speaker
-            ctx.fillStyle = 'rgba(139, 92, 246, 0.25)';
-            for (let i = 0; i < 20; i++) {
-                const barH = Math.sin(time * 3 + i) * 40 + 60;
-                ctx.fillRect(x + i * 36 + 10, y + h / 2 - barH / 2, 20, barH);
-            }
-
-            // Speaker Avatar Circle
-            ctx.fillStyle = '#8b5cf6';
-            ctx.beginPath();
-            ctx.arc(w / 2, h / 2 - 30, 80 + Math.sin(time * 2) * 6, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Speaker Emoji / Icon
-            ctx.font = 'bold 70px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('🎙️', w / 2, h / 2 - 30);
-
-            // Youtube Channel Tag
-            ctx.font = 'bold 24px "Plus Jakarta Sans"';
-            ctx.fillStyle = '#06b6d4';
-            ctx.fillText('YOUTUBE ORIGINAL PODCAST', w / 2, h / 2 + 80);
-        }
-
-        function renderBottomLayoutFrame(ctx, x, y, w, h, time) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(x, y, w, h);
-            ctx.clip();
-
-            if (appState.selectedLayout === 'subway') {
-                // Subway Surfers Canvas Runner Simulation
-                ctx.fillStyle = '#1e1b2e';
-                ctx.fillRect(x, y, w, h);
-
-                // Tracks
-                ctx.strokeStyle = '#475569';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(x + w * 0.2, y); ctx.lineTo(x + w * 0.05, y + h);
-                ctx.moveTo(x + w * 0.5, y); ctx.lineTo(x + w * 0.5, y + h);
-                ctx.moveTo(x + w * 0.8, y); ctx.lineTo(x + w * 0.95, y + h);
-                ctx.stroke();
-
-                // Moving Obstacles
-                const offset = (time * 200) % 180;
-                ctx.fillStyle = '#ef4444';
-                ctx.fillRect(x + w * 0.38, y + offset, 80, 50);
-
-                // Surfer Character
-                const posX = x + w * 0.5 + Math.sin(time * 4) * 60;
-                ctx.fillStyle = '#f59e0b';
-                ctx.beginPath();
-                ctx.arc(posX, y + h - 120, 30, 0, Math.PI * 2);
-                ctx.fill();
-
-            } else if (appState.selectedLayout === 'minecraft') {
-                // Minecraft Parkour Loop
-                ctx.fillStyle = '#0f172a';
-                ctx.fillRect(x, y, w, h);
-
-                const blockW = 120;
-                const speed = (time * 150) % blockW;
-
-                for (let i = -1; i < 6; i++) {
-                    const blockX = x + i * blockW - speed;
-                    const blockY = y + h - 200 + Math.sin(i + time) * 30;
-
-                    ctx.fillStyle = '#78350f';
-                    ctx.fillRect(blockX, blockY, 95, 180);
-                    ctx.fillStyle = '#22c55e';
-                    ctx.fillRect(blockX, blockY, 95, 25);
-                }
-
-            } else if (appState.selectedLayout === 'sand') {
-                // ASMR Sand Slicing
-                ctx.fillStyle = '#311b92';
-                ctx.fillRect(x, y, w, h);
-
-                for (let i = 0; i < 35; i++) {
-                    const posX = x + (Math.sin(i + time) * 0.5 + 0.5) * w;
-                    const posY = y + (Math.cos(i * 2 + time) * 0.5 + 0.5) * h;
-                    ctx.fillStyle = i % 2 === 0 ? '#ec4899' : '#06b6d4';
-                    ctx.beginPath();
-                    ctx.arc(posX, posY, 18 + Math.sin(time + i) * 8, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-            } else {
-                // Top/Bottom Cloned Ambient Blur
-                ctx.fillStyle = '#090514';
-                ctx.fillRect(x, y, w, h);
-
-                ctx.fillStyle = '#8b5cf6';
-                ctx.globalAlpha = 0.3;
-                ctx.beginPath();
-                ctx.arc(x + w/2, y + h/2, 180 + Math.sin(time * 2) * 20, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1.0;
-            }
-
-            ctx.restore();
-        }
-
-        // PLAYBACK & WORD ADVANCEMENT
-        let playbackInterval;
-        function startVideoSimulation() {
-            if (playbackInterval) clearInterval(playbackInterval);
-            appState.isPlaying = true;
-            updatePlayIcons(true);
-
-            playbackInterval = setInterval(() => {
-                if (!appState.isPlaying) return;
-
-                appState.currentWordIdx = (appState.currentWordIdx + 1) % appState.words.length;
-                updateSubtitles();
-
-                appState.currentTime = (appState.currentTime + 1);
-                if (appState.currentTime > appState.duration) appState.currentTime = 0;
-
-                const progress = (appState.currentTime / appState.duration) * 100;
-                document.getElementById('videoScrubber').value = progress;
-                document.getElementById('currentTimeText').innerText = `00:${appState.currentTime < 10 ? '0' : ''}${Math.floor(appState.currentTime)}`;
-                document.getElementById('videoTimer').innerText = `00:${appState.currentTime < 10 ? '0' : ''}${Math.floor(appState.currentTime)} / 00:${appState.duration}`;
-            }, 600);
-        }
-
-        function stopVideoSimulation() {
-            if (playbackInterval) clearInterval(playbackInterval);
-            appState.isPlaying = false;
-            updatePlayIcons(false);
-        }
-
-        function toggleVideoPlayback() {
-            if (appState.isPlaying) {
-                stopVideoSimulation();
-            } else {
-                startVideoSimulation();
-            }
-        }
-
-        function restartPlayback() {
-            appState.currentTime = 0;
-            appState.currentWordIdx = 0;
-            updateSubtitles();
-        }
-
-        function scrubVideo(val) {
-            appState.currentTime = Math.floor((val / 100) * appState.duration);
-            document.getElementById('currentTimeText').innerText = `00:${appState.currentTime < 10 ? '0' : ''}${appState.currentTime}`;
-        }
-
-        function updatePlayIcons(playing) {
-            document.getElementById('playIcon').className = playing ? "fa-solid fa-pause" : "fa-solid fa-play";
-            document.getElementById('centerPlayIcon').className = playing ? "fa-solid fa-pause ml-0" : "fa-solid fa-play ml-1";
-        }
-
-        // GENERATE & EXPORT ACTION
-        function triggerGenerateAndDownload() {
-            const feedback = document.getElementById('exportFeedback');
-            if (feedback) feedback.classList.remove('hidden');
-
-            // Copy short URL to clipboard
-            const dummyUrl = `https://clipfarm.ai/short/${Math.random().toString(36).substring(7)}`;
-            const tempInput = document.createElement('input');
-            tempInput.value = dummyUrl;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-
-            // Trigger canvas snapshot download
-            const link = document.createElement('a');
-            link.download = `clipfarm-viral-short-${appState.selectedLayout}.png`;
-            link.href = videoCanvas.toDataURL();
-            link.click();
-
-            setTimeout(() => {
-                if (feedback) feedback.classList.add('hidden');
-            }, 4000);
-        }
-    </script>
-</body>
-</html>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clipfarm AI - Professional Short-Form Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070510;
+      --panel-bg: rgba(18, 14, 33, 0.75);
+      --border-color: rgba(139, 92, 246, 0.2);
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-pink: #ec4899;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #space-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .hero-container.hidden {
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+    }
+
+    .hero-box {
+      background: rgba(15, 11, 28, 0.85);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      box-shadow: 0 0 50px rgba(139, 92, 246, 0.25), inset 0 0 20px rgba(139, 92, 246, 0.1);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 48px;
+      max-width: 650px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .hero-box h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .hero-box p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 32px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 18px 20px;
+      background: rgba(7, 5, 16, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-wrapper input:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    }
+
+    .btn-analyze {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+      animation: pulseGlow 2s infinite;
+      transition: transform 0.2s;
+    }
+
+    .btn-analyze:hover { transform: translateY(-2px); }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+      50% { box-shadow: 0 0 35px rgba(6, 182, 212, 0.7); }
+    }
+
+    .app-workspace {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      height: 100vh;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .app-workspace.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .side-panel {
+      width: 440px;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--border-color);
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 24px;
+      gap: 24px;
+    }
+
+    .panel-section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .clip-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .clip-card:hover, .clip-card.active {
+      border-color: var(--accent-purple);
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    .clip-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .clip-title { font-weight: 700; font-size: 0.95rem; }
+    .viral-badge {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid #10b981;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+
+    .captions-grid {
+      display: grid;
+      grid-template-columns:
