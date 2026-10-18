@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clipfarm AI - Short-Form Generator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <title>Clipfarm AI Pro - Viral Short-Form Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-dark: #070510;
-      --panel-bg: rgba(18, 14, 33, 0.85);
-      --border-color: rgba(139, 92, 246, 0.25);
+      --panel-bg: rgba(14, 10, 26, 0.92);
+      --border-color: rgba(139, 92, 246, 0.22);
       --accent-purple: #8b5cf6;
       --accent-cyan: #06b6d4;
+      --accent-pink: #ec4899;
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
     }
@@ -22,7 +23,7 @@
       background-color: var(--bg-dark);
       color: var(--text-main);
       min-height: 100vh;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     #space-bg {
@@ -32,7 +33,7 @@
       pointer-events: none;
     }
 
-    /* LANDING SCREEN */
+    /* SCREEN 1: LANDING HERO */
     .hero-container {
       position: relative;
       z-index: 10;
@@ -42,103 +43,134 @@
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
+      transition: opacity 0.4s ease;
     }
 
     .hero-container.hidden { display: none !important; }
 
     .hero-box {
-      background: rgba(15, 11, 28, 0.85);
+      background: rgba(15, 11, 28, 0.88);
       border: 1px solid rgba(139, 92, 246, 0.4);
-      box-shadow: 0 0 50px rgba(139, 92, 246, 0.25);
-      backdrop-filter: blur(16px);
-      border-radius: 24px;
-      padding: 48px;
-      max-width: 600px;
+      box-shadow: 0 0 60px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 56px 48px;
+      max-width: 650px;
       width: 100%;
       text-align: center;
     }
 
     .hero-box h1 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #a78bfa, #38bdf8);
+      background: linear-gradient(135deg, #a78bfa, #38bdf8, #ec4899);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
-    .hero-box p { color: var(--text-muted); font-size: 1rem; margin-bottom: 32px; }
+    .hero-box p { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 36px; }
+
+    .input-wrapper { position: relative; margin-bottom: 24px; }
 
     .input-wrapper input {
       width: 100%;
-      padding: 18px 20px;
-      background: rgba(7, 5, 16, 0.8);
+      padding: 20px 24px;
+      background: rgba(7, 5, 16, 0.85);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
+      border-radius: 16px;
       color: #fff;
-      font-size: 1rem;
+      font-size: 1.05rem;
       outline: none;
-      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .input-wrapper input:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
     }
 
     .btn-analyze {
       width: 100%;
-      padding: 18px;
+      padding: 20px;
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
       border: none;
-      border-radius: 14px;
+      border-radius: 16px;
       color: white;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
       cursor: pointer;
       display: none;
+      box-shadow: 0 0 25px rgba(139, 92, 246, 0.5);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    /* WORKSPACE SCREEN */
+    .btn-analyze:hover { transform: translateY(-2px); box-shadow: 0 0 35px rgba(6, 182, 212, 0.7); }
+
+    /* SCREEN 2: WORKSPACE */
     .app-workspace {
       position: relative;
       z-index: 10;
       display: none;
       height: 100vh;
+      width: 100vw;
     }
 
     .app-workspace.active { display: flex !important; }
 
+    /* SIDE PANEL */
     .side-panel {
-      width: 420px;
+      width: 440px;
+      height: 100%;
       background: var(--panel-bg);
       border-right: 1px solid var(--border-color);
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(24px);
       display: flex;
       flex-direction: column;
       overflow-y: auto;
-      padding: 24px;
-      gap: 24px;
+      padding: 28px;
+      gap: 28px;
+      z-index: 20;
     }
 
     .panel-section-title {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
       color: var(--accent-cyan);
       font-weight: 700;
       margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
 
     .clip-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 14px;
+      border-radius: 14px;
+      padding: 14px 16px;
       margin-bottom: 10px;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-    .clip-card.active { border-color: var(--accent-purple); background: rgba(139, 92, 246, 0.1); }
-    .viral-badge { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; font-size: 0.75rem; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+    .clip-card:hover, .clip-card.active {
+      border-color: var(--accent-purple);
+      background: rgba(139, 92, 246, 0.15);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+    }
+
+    .viral-badge {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid #10b981;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
 
     .captions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
@@ -146,29 +178,40 @@
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-color);
       color: #fff;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 0.8rem;
+      padding: 12px 10px;
+      border-radius: 12px;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
     }
 
-    .cap-btn.selected { border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.2); }
+    .cap-btn:hover, .cap-btn.selected {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.18);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+    }
 
     .layout-opt {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 14px;
       margin-bottom: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
+      transition: all 0.2s ease;
     }
 
-    .layout-opt.selected { border-color: var(--accent-purple); background: rgba(139, 92, 246, 0.2); }
+    .layout-opt:hover, .layout-opt.selected {
+      border-color: var(--accent-purple);
+      background: rgba(139, 92, 246, 0.2);
+    }
 
+    /* RIGHT PREVIEW AREA */
     .main-preview {
       flex: 1;
       display: flex;
@@ -178,13 +221,28 @@
       position: relative;
     }
 
+    .top-nav { position: absolute; top: 24px; right: 28px; }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .nav-btn:hover { background: rgba(255, 255, 255, 0.15); }
+
     .phone-stage {
-      width: 320px;
-      height: 580px;
+      width: 340px;
+      height: 610px;
       background: #000;
-      border-radius: 28px;
+      border-radius: 32px;
       border: 4px solid #1e1b2e;
-      box-shadow: 0 0 40px rgba(0,0,0,0.8);
+      box-shadow: 0 0 60px rgba(0,0,0,0.95), 0 0 25px rgba(139, 92, 246, 0.25);
       overflow: hidden;
       position: relative;
       display: flex;
@@ -195,110 +253,206 @@
       position: relative;
       width: 100%;
       height: 50%;
-      background: #111;
+      background: #000;
+      overflow: hidden;
     }
 
-    iframe#yt-iframe { width: 100%; height: 100%; border: none; }
+    #yt-player {
+      width: 100%;
+      height: 140%;
+      margin-top: -20%;
+      border: none;
+      pointer-events: all;
+    }
 
     .subtitle-overlay {
       position: absolute;
-      bottom: 12px;
+      bottom: 16px;
       left: 0; width: 100%;
       text-align: center;
-      z-index: 20;
+      z-index: 30;
+      pointer-events: none;
+      padding: 0 10px;
     }
 
-    .sub-text { display: inline-block; padding: 6px 12px; border-radius: 8px; font-weight: 900; font-size: 1rem; text-transform: uppercase; }
+    .sub-text {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
 
-    .sub-mrbeast { background: #ffe600; color: #000; }
-    .sub-neon { color: #00f3ff; text-shadow: 0 0 10px #00f3ff; }
-    .sub-hormozi { background: #10b981; color: #fff; }
+    /* 10 Caption Styles */
+    .sub-mrbeast { background: #ffe600; color: #000; font-size: 1.2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
+    .sub-neon { color: #00f3ff; text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff; }
+    .sub-hormozi { background: #10b981; color: #fff; border-radius: 4px; }
     .sub-tiktok { background: #000; color: #fff; border: 2px solid #ff0050; }
     .sub-gradient { background: linear-gradient(90deg, #ff007f, #7928ca); color: #fff; }
+    .sub-minimal { background: rgba(0,0,0,0.75); color: #fff; border-radius: 20px; font-weight: 500; }
+    .sub-karaoke { color: #ffe600; text-shadow: 0 2px 4px #000, 0 0 10px #ff0050; }
+    .sub-comic { color: #ff0000; text-shadow: 2px 2px 0px #ffff00; }
+    .sub-glitch { color: #00ff66; text-shadow: -2px 0 #ff00c8, 2px 0 #00d8ff; }
+    .sub-darkpill { background: #111827; color: #f9fafb; border: 1px solid #374151; }
 
-    .bottom-container { width: 100%; height: 50%; background: #05050d; position: relative; }
-    #asmr-canvas { position: absolute; top:0; left:0; width:100%; height:100%; }
+    .bottom-container {
+      width: 100%;
+      height: 50%;
+      background: #05050d;
+      position: relative;
+      overflow: hidden;
+      border-top: 2px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .blur-backdrop {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, rgba(6, 182, 212, 0.25) 70%, rgba(7, 5, 16, 0.95) 100%);
+      filter: blur(24px);
+      transition: opacity 0.3s;
+    }
+
+    #asmr-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 5;
+      display: none;
+    }
 
     .btn-export-main {
-      width: 100%; padding: 16px;
+      width: 100%;
+      padding: 18px;
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
-      border: none; border-radius: 12px; color: white; font-weight: 800; cursor: pointer;
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-weight: 800;
+      font-size: 1.05rem;
+      cursor: pointer;
+      margin-top: auto;
+      box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
+      transition: transform 0.2s;
     }
+    .btn-export-main:hover { transform: translateY(-2px); }
   </style>
 </head>
 <body>
 
   <canvas id="space-bg"></canvas>
 
+  <!-- SCREEN 1 -->
   <div class="hero-container" id="hero-screen">
     <div class="hero-box">
-      <h1>Clipfarm AI</h1>
-      <p>Convert YouTube Videos into Viral Shorts in Seconds</p>
+      <h1>Clipfarm AI Pro</h1>
+      <p>Transform Long YouTube Videos Into High-Retention Viral Shorts Instantly</p>
       
       <div class="input-wrapper">
-        <input type="text" id="yt-url-input" placeholder="Paste YouTube Link...">
+        <input type="text" id="yt-url-input" placeholder="Paste YouTube Link (e.g., https://www.youtube.com/watch?v=...)">
       </div>
 
       <button class="btn-analyze" id="analyze-btn" onclick="startAnalysis()">🚀 ANALYZE VIRAL MOMENTS</button>
     </div>
   </div>
 
+  <!-- SCREEN 2 -->
   <div class="app-workspace" id="studio-screen">
     <div class="side-panel">
       <div>
         <div class="panel-section-title">
           <span>1. AI Viral Moments</span>
-          <span style="color:var(--text-muted); font-size:0.75rem">Clips Ready</span>
+          <span style="color:var(--text-muted); font-size:0.75rem">3 Segments Found</span>
         </div>
-        <div class="clip-card active">
-          <div style="display:flex; justify-content:space-between">
-            <span style="font-weight:700">Hook #1: Viral Start</span>
-            <span class="viral-badge">97% VIRAL</span>
+        
+        <div class="clip-card active" onclick="selectClip(15, this)">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:700; font-size:0.9rem">Hook #1: Curiosity Peak</span>
+            <span class="viral-badge">98% VIRAL</span>
           </div>
-          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">"Did you know that in 1962..."</p>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">"High retention hook detected at 0:15"</p>
+        </div>
+
+        <div class="clip-card" onclick="selectClip(55, this)">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:700; font-size:0.9rem">Clip #2: The Plot Twist</span>
+            <span class="viral-badge">94% VIRAL</span>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">"Engagement surge detected at 0:55"</p>
+        </div>
+
+        <div class="clip-card" onclick="selectClip(120, this)">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:700; font-size:0.9rem">Clip #3: Climax Resolution</span>
+            <span class="viral-badge">91% VIRAL</span>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">"Re-watch spike detected at 2:00"</p>
         </div>
       </div>
 
       <div>
-        <div class="panel-section-title">2. Subtitle Styles</div>
+        <div class="panel-section-title">2. Retention Subtitles (10 Styles)</div>
         <div class="captions-grid">
-          <button class="cap-btn selected" onclick="setCaption('mrbeast', this)">MrBeast Pop</button>
-          <button class="cap-btn" onclick="setCaption('neon', this)">Neon Cyber</button>
-          <button class="cap-btn" onclick="setCaption('hormozi', this)">Hormozi Bold</button>
-          <button class="cap-btn" onclick="setCaption('tiktok', this)">TikTok Pop</button>
-          <button class="cap-btn" onclick="setCaption('gradient', this)">Gradient Flame</button>
+          <button class="cap-btn selected" onclick="setCaption('mrbeast', this)">1. MrBeast Pop</button>
+          <button class="cap-btn" onclick="setCaption('neon', this)">2. Neon Cyan Glow</button>
+          <button class="cap-btn" onclick="setCaption('hormozi', this)">3. Hormozi Bold</button>
+          <button class="cap-btn" onclick="setCaption('tiktok', this)">4. TikTok Kinetic</button>
+          <button class="cap-btn" onclick="setCaption('gradient', this)">5. Gradient Flame</button>
+          <button class="cap-btn" onclick="setCaption('minimal', this)">6. Minimal Clean</button>
+          <button class="cap-btn" onclick="setCaption('karaoke', this)">7. Karaoke Glow</button>
+          <button class="cap-btn" onclick="setCaption('comic', this)">8. Comic Retro</button>
+          <button class="cap-btn" onclick="setCaption('glitch', this)">9. Glitch Cyber</button>
+          <button class="cap-btn" onclick="setCaption('darkpill', this)">10. High-Contrast</button>
         </div>
       </div>
 
       <div>
         <div class="panel-section-title">3. Bottom Split Layout</div>
         <div class="layout-opt selected" onclick="setLayout('blur', this)">
-          <span>✨</span><div><b>Ambient Blur</b></div>
+          <span style="font-size:1.2rem">✨</span>
+          <div>
+            <div style="font-weight:700; font-size:0.9rem">Ambient Gradient Blur</div>
+            <div style="font-size:0.75rem; color:var(--text-muted)">Cloned aesthetic backdrop</div>
+          </div>
         </div>
+
         <div class="layout-opt" onclick="setLayout('asmr', this)">
-          <span>⏳</span><div><b>Kinetic Particles</b></div>
+          <span style="font-size:1.2rem">⏳</span>
+          <div>
+            <div style="font-weight:700; font-size:0.9rem">Satisfying ASMR Particles</div>
+            <div style="font-size:0.75rem; color:var(--text-muted)">Kinetic flow simulation loop</div>
+          </div>
         </div>
       </div>
 
-      <button class="btn-export-main" onclick="alert('Short processed! Link copied to clipboard.')">⚡ GENERATE & DOWNLOAD</button>
+      <button class="btn-export-main" onclick="exportShort()">⚡ GENERATE & DOWNLOAD SHORT</button>
     </div>
 
+    <!-- PREVIEW RIGHT -->
     <div class="main-preview">
+      <div class="top-nav">
+        <button class="nav-btn" onclick="resetApp()">← Paste New URL</button>
+      </div>
+
       <div class="phone-stage">
         <div class="yt-frame-container">
-          <iframe id="yt-iframe" src="" allow="autoplay"></iframe>
+          <div id="player"></div>
           <div class="subtitle-overlay">
-            <span class="sub-text sub-mrbeast" id="caption-preview">DISCOVER THE SECRET...</span>
+            <span class="sub-text sub-mrbeast" id="caption-preview">CATCH THE VIRAL HOOK...</span>
           </div>
         </div>
 
         <div class="bottom-container">
+          <div class="blur-backdrop" id="blur-bg"></div>
           <canvas id="asmr-canvas"></canvas>
         </div>
       </div>
     </div>
   </div>
 
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     // Starry background canvas
     const bgCanvas = document.getElementById('space-bg');
@@ -306,11 +460,11 @@
     bgCanvas.width = window.innerWidth;
     bgCanvas.height = window.innerHeight;
     
-    let stars = Array.from({length: 80}, () => ({
+    let stars = Array.from({length: 120}, () => ({
       x: Math.random() * bgCanvas.width,
       y: Math.random() * bgCanvas.height,
       size: Math.random() * 2,
-      speed: Math.random() * 0.5 + 0.1
+      speed: Math.random() * 0.4 + 0.1
     }));
 
     function renderBg() {
@@ -328,25 +482,64 @@
     }
     renderBg();
 
-    // Input toggle
+    // Input Detection
     const ytInput = document.getElementById('yt-url-input');
     const analyzeBtn = document.getElementById('analyze-btn');
     ytInput.addEventListener('input', (e) => {
       analyzeBtn.style.display = e.target.value.trim() ? 'block' : 'none';
     });
 
+    let player;
+    let currentVideoId = 'dQw4w9WgXcQ';
+
     function extractVideoId(url) {
       const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
       return match ? match[1] : 'dQw4w9WgXcQ';
     }
 
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: currentVideoId,
+        playerVars: { 'autoplay': 1, 'controls': 0, 'modestbranding': 1, 'rel': 0 },
+        events: {
+          'onReady': (e) => e.target.playVideo()
+        }
+      });
+    }
+
     function startAnalysis() {
-      const videoId = extractVideoId(ytInput.value);
-      const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}`;
-      
-      document.getElementById('yt-iframe').src = embedUrl;
+      currentVideoId = extractVideoId(ytInput.value);
+
       document.getElementById('hero-screen').classList.add('hidden');
       document.getElementById('studio-screen').classList.add('active');
+
+      if (player && player.loadVideoById) {
+        player.loadVideoById({ videoId: currentVideoId, startSeconds: 15 });
+      }
+
+      initASMRCanvas();
+      startSubtitleLoop();
+    }
+
+    // Live Timestamp Seek
+    function selectClip(timeInSeconds, cardEl) {
+      document.querySelectorAll('.clip-card').forEach(c => c.classList.remove('active'));
+      cardEl.classList.add('active');
+
+      if (player && player.seekTo) {
+        player.seekTo(timeInSeconds, true);
+        player.playVideo();
+      }
+    }
+
+    // Subtitle phrase rotation
+    const phrases = ["CATCH THE VIRAL HOOK...", "THIS CHANGES EVERYTHING!", "LOOK CLOSELY AT THIS...", "UNBELIEVABLE RESULT!", "SHARE WITH A FRIEND!"];
+    let pIdx = 0;
+    function startSubtitleLoop() {
+      setInterval(() => {
+        pIdx = (pIdx + 1) % phrases.length;
+        document.getElementById('caption-preview').innerText = phrases[pIdx];
+      }, 1800);
     }
 
     function setCaption(style, btn) {
@@ -355,9 +548,63 @@
       document.getElementById('caption-preview').className = 'sub-text sub-' + style;
     }
 
+    // Bottom Layout switcher
+    const asmrCanvas = document.getElementById('asmr-canvas');
+    const blurBg = document.getElementById('blur-bg');
+    let currentLayout = 'blur';
+
     function setLayout(type, el) {
       document.querySelectorAll('.layout-opt').forEach(l => l.classList.remove('selected'));
       el.classList.add('selected');
+      currentLayout = type;
+
+      if (type === 'asmr') {
+        asmrCanvas.style.display = 'block';
+        blurBg.style.opacity = '0.3';
+      } else {
+        asmrCanvas.style.display = 'none';
+        blurBg.style.opacity = '1';
+      }
+    }
+
+    // ASMR Particle Animation Loop
+    const asmrCtx = asmrCanvas.getContext('2d');
+    let particles = [];
+
+    function initASMRCanvas() {
+      asmrCanvas.width = asmrCanvas.parentElement.clientWidth;
+      asmrCanvas.height = asmrCanvas.parentElement.clientHeight;
+      particles = Array.from({length: 60}, () => ({
+        x: Math.random() * asmrCanvas.width,
+        y: Math.random() * asmrCanvas.height,
+        vy: Math.random() * 1.8 + 0.8,
+        size: Math.random() * 5 + 2,
+        color: `hsl(${Math.random() * 60 + 250}, 80%, 65%)`
+      }));
+      drawASMR();
+    }
+
+    function drawASMR() {
+      asmrCtx.clearRect(0, 0, asmrCanvas.width, asmrCanvas.height);
+      if (currentLayout === 'asmr') {
+        particles.forEach(p => {
+          asmrCtx.fillStyle = p.color;
+          asmrCtx.fillRect(p.x, p.y, p.size, p.size);
+          p.y += p.vy;
+          if (p.y > asmrCanvas.height) p.y = 0;
+        });
+      }
+      requestAnimationFrame(drawASMR);
+    }
+
+    function resetApp() {
+      document.getElementById('hero-screen').classList.remove('hidden');
+      document.getElementById('studio-screen').classList.remove('active');
+    }
+
+    function exportShort() {
+      navigator.clipboard.writeText(ytInput.value || "https://youtube.com");
+      alert("🎉 Viral Short Successfully Generated!\n\nSettings & link copied to clipboard.");
     }
   </script>
 </body>
