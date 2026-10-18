@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clipfarm AI - Professional Short-Form Generator</title>
+  <title>Clipfarm AI - Short-Form Generator</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-dark: #070510;
-      --panel-bg: rgba(18, 14, 33, 0.75);
-      --border-color: rgba(139, 92, 246, 0.2);
+      --panel-bg: rgba(18, 14, 33, 0.85);
+      --border-color: rgba(139, 92, 246, 0.25);
       --accent-purple: #8b5cf6;
       --accent-cyan: #06b6d4;
-      --accent-pink: #ec4899;
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
     }
@@ -33,6 +32,7 @@
       pointer-events: none;
     }
 
+    /* LANDING SCREEN */
     .hero-container {
       position: relative;
       z-index: 10;
@@ -42,25 +42,18 @@
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
-      transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
-    .hero-container.hidden {
-      opacity: 0;
-      transform: scale(0.95);
-      pointer-events: none;
-      position: absolute;
-      width: 100%;
-    }
+    .hero-container.hidden { display: none !important; }
 
     .hero-box {
       background: rgba(15, 11, 28, 0.85);
       border: 1px solid rgba(139, 92, 246, 0.4);
-      box-shadow: 0 0 50px rgba(139, 92, 246, 0.25), inset 0 0 20px rgba(139, 92, 246, 0.1);
+      box-shadow: 0 0 50px rgba(139, 92, 246, 0.25);
       backdrop-filter: blur(16px);
       border-radius: 24px;
       padding: 48px;
-      max-width: 650px;
+      max-width: 600px;
       width: 100%;
       text-align: center;
     }
@@ -75,16 +68,7 @@
       margin-bottom: 12px;
     }
 
-    .hero-box p {
-      color: var(--text-muted);
-      font-size: 1rem;
-      margin-bottom: 32px;
-    }
-
-    .input-wrapper {
-      position: relative;
-      margin-bottom: 24px;
-    }
+    .hero-box p { color: var(--text-muted); font-size: 1rem; margin-bottom: 32px; }
 
     .input-wrapper input {
       width: 100%;
@@ -95,12 +79,7 @@
       color: #fff;
       font-size: 1rem;
       outline: none;
-      transition: all 0.3s ease;
-    }
-
-    .input-wrapper input:focus {
-      border-color: var(--accent-purple);
-      box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+      margin-bottom: 20px;
     }
 
     .btn-analyze {
@@ -114,34 +93,20 @@
       font-weight: 700;
       cursor: pointer;
       display: none;
-      animation: pulseGlow 2s infinite;
-      transition: transform 0.2s;
     }
 
-    .btn-analyze:hover { transform: translateY(-2px); }
-
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
-      50% { box-shadow: 0 0 35px rgba(6, 182, 212, 0.7); }
-    }
-
+    /* WORKSPACE SCREEN */
     .app-workspace {
       position: relative;
       z-index: 10;
-      display: flex;
+      display: none;
       height: 100vh;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
     }
 
-    .app-workspace.active {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .app-workspace.active { display: flex !important; }
 
     .side-panel {
-      width: 440px;
+      width: 420px;
       background: var(--panel-bg);
       border-right: 1px solid var(--border-color);
       backdrop-filter: blur(20px);
@@ -161,7 +126,6 @@
       margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
     }
 
     .clip-card {
@@ -171,26 +135,230 @@
       padding: 14px;
       margin-bottom: 10px;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
 
-    .clip-card:hover, .clip-card.active {
-      border-color: var(--accent-purple);
-      background: rgba(139, 92, 246, 0.1);
-    }
+    .clip-card.active { border-color: var(--accent-purple); background: rgba(139, 92, 246, 0.1); }
+    .viral-badge { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; font-size: 0.75rem; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
 
-    .clip-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
-    .clip-title { font-weight: 700; font-size: 0.95rem; }
-    .viral-badge {
-      background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
-      border: 1px solid #10b981;
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 20px;
+    .captions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .cap-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.8rem;
       font-weight: 700;
+      cursor: pointer;
     }
 
-    .captions-grid {
-      display: grid;
-      grid-template-columns:
+    .cap-btn.selected { border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.2); }
+
+    .layout-opt {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .layout-opt.selected { border-color: var(--accent-purple); background: rgba(139, 92, 246, 0.2); }
+
+    .main-preview {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .phone-stage {
+      width: 320px;
+      height: 580px;
+      background: #000;
+      border-radius: 28px;
+      border: 4px solid #1e1b2e;
+      box-shadow: 0 0 40px rgba(0,0,0,0.8);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .yt-frame-container {
+      position: relative;
+      width: 100%;
+      height: 50%;
+      background: #111;
+    }
+
+    iframe#yt-iframe { width: 100%; height: 100%; border: none; }
+
+    .subtitle-overlay {
+      position: absolute;
+      bottom: 12px;
+      left: 0; width: 100%;
+      text-align: center;
+      z-index: 20;
+    }
+
+    .sub-text { display: inline-block; padding: 6px 12px; border-radius: 8px; font-weight: 900; font-size: 1rem; text-transform: uppercase; }
+
+    .sub-mrbeast { background: #ffe600; color: #000; }
+    .sub-neon { color: #00f3ff; text-shadow: 0 0 10px #00f3ff; }
+    .sub-hormozi { background: #10b981; color: #fff; }
+    .sub-tiktok { background: #000; color: #fff; border: 2px solid #ff0050; }
+    .sub-gradient { background: linear-gradient(90deg, #ff007f, #7928ca); color: #fff; }
+
+    .bottom-container { width: 100%; height: 50%; background: #05050d; position: relative; }
+    #asmr-canvas { position: absolute; top:0; left:0; width:100%; height:100%; }
+
+    .btn-export-main {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+      border: none; border-radius: 12px; color: white; font-weight: 800; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="space-bg"></canvas>
+
+  <div class="hero-container" id="hero-screen">
+    <div class="hero-box">
+      <h1>Clipfarm AI</h1>
+      <p>Convert YouTube Videos into Viral Shorts in Seconds</p>
+      
+      <div class="input-wrapper">
+        <input type="text" id="yt-url-input" placeholder="Paste YouTube Link...">
+      </div>
+
+      <button class="btn-analyze" id="analyze-btn" onclick="startAnalysis()">🚀 ANALYZE VIRAL MOMENTS</button>
+    </div>
+  </div>
+
+  <div class="app-workspace" id="studio-screen">
+    <div class="side-panel">
+      <div>
+        <div class="panel-section-title">
+          <span>1. AI Viral Moments</span>
+          <span style="color:var(--text-muted); font-size:0.75rem">Clips Ready</span>
+        </div>
+        <div class="clip-card active">
+          <div style="display:flex; justify-content:space-between">
+            <span style="font-weight:700">Hook #1: Viral Start</span>
+            <span class="viral-badge">97% VIRAL</span>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">"Did you know that in 1962..."</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel-section-title">2. Subtitle Styles</div>
+        <div class="captions-grid">
+          <button class="cap-btn selected" onclick="setCaption('mrbeast', this)">MrBeast Pop</button>
+          <button class="cap-btn" onclick="setCaption('neon', this)">Neon Cyber</button>
+          <button class="cap-btn" onclick="setCaption('hormozi', this)">Hormozi Bold</button>
+          <button class="cap-btn" onclick="setCaption('tiktok', this)">TikTok Pop</button>
+          <button class="cap-btn" onclick="setCaption('gradient', this)">Gradient Flame</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel-section-title">3. Bottom Split Layout</div>
+        <div class="layout-opt selected" onclick="setLayout('blur', this)">
+          <span>✨</span><div><b>Ambient Blur</b></div>
+        </div>
+        <div class="layout-opt" onclick="setLayout('asmr', this)">
+          <span>⏳</span><div><b>Kinetic Particles</b></div>
+        </div>
+      </div>
+
+      <button class="btn-export-main" onclick="alert('Short processed! Link copied to clipboard.')">⚡ GENERATE & DOWNLOAD</button>
+    </div>
+
+    <div class="main-preview">
+      <div class="phone-stage">
+        <div class="yt-frame-container">
+          <iframe id="yt-iframe" src="" allow="autoplay"></iframe>
+          <div class="subtitle-overlay">
+            <span class="sub-text sub-mrbeast" id="caption-preview">DISCOVER THE SECRET...</span>
+          </div>
+        </div>
+
+        <div class="bottom-container">
+          <canvas id="asmr-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Starry background canvas
+    const bgCanvas = document.getElementById('space-bg');
+    const ctx = bgCanvas.getContext('2d');
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
+    
+    let stars = Array.from({length: 80}, () => ({
+      x: Math.random() * bgCanvas.width,
+      y: Math.random() * bgCanvas.height,
+      size: Math.random() * 2,
+      speed: Math.random() * 0.5 + 0.1
+    }));
+
+    function renderBg() {
+      ctx.fillStyle = '#070510';
+      ctx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+      ctx.fillStyle = '#8b5cf6';
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fill();
+        s.y += s.speed;
+        if (s.y > bgCanvas.height) s.y = 0;
+      });
+      requestAnimationFrame(renderBg);
+    }
+    renderBg();
+
+    // Input toggle
+    const ytInput = document.getElementById('yt-url-input');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    ytInput.addEventListener('input', (e) => {
+      analyzeBtn.style.display = e.target.value.trim() ? 'block' : 'none';
+    });
+
+    function extractVideoId(url) {
+      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+      return match ? match[1] : 'dQw4w9WgXcQ';
+    }
+
+    function startAnalysis() {
+      const videoId = extractVideoId(ytInput.value);
+      const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}`;
+      
+      document.getElementById('yt-iframe').src = embedUrl;
+      document.getElementById('hero-screen').classList.add('hidden');
+      document.getElementById('studio-screen').classList.add('active');
+    }
+
+    function setCaption(style, btn) {
+      document.querySelectorAll('.cap-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('caption-preview').className = 'sub-text sub-' + style;
+    }
+
+    function setLayout(type, el) {
+      document.querySelectorAll('.layout-opt').forEach(l => l.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+  </script>
+</body>
+</html>
