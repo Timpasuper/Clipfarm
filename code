@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#0f0d19] text-gray-100 antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viblo Studio - Free Faceless Short Generator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        studio: {
+                            bg: '#0f0d19',
+                            card: '#181528',
+                            border: '#2a2442',
+                            accent: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            pink: '#ec4899',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0d19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2442;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5cf6;
+        }
+
+        /* Kinetic Subtitle Animation Styles */
+        .caption-bounce {
+            animation: captionPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes captionPop {
+            0% { transform: scale(0.7) translateY(10px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .neon-glow {
+            text-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4, 0 0 30px #8b5cf6;
+        }
+
+        .gradient-border {
+            border: 1px solid transparent;
+            background-image: linear-gradient(#181528, #181528), linear-gradient(135deg, #8b5cf6, #06b6d4);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans overflow-hidden select-none">
+
+    <!-- TOP HEADER / NAV BAR -->
+    <header class="h-16 bg-studio-card border-b border-studio-border px-4 flex items-center justify-between shrink-0 z-20">
+        <!-- Logo & Branding -->
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-studio-accent to-studio-cyan flex items-center justify-center shadow-lg shadow-studio-accent/20">
+                <i class="fa-solid fa-wand-magic-sparkles text-white text-lg"></i>
+            </div>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <h1 class="font-bold text-lg tracking-wide text-white">Viblo<span class="text-studio-accent">Studio</span></h1>
+                    <span class="text-[10px] bg-studio-accent/20 text-studio-accent font-semibold px-2 py-0.5 rounded-full border border-studio-accent/30">FREE EDITION</span>
+                </div>
+                <p class="text-xs text-gray-400 hidden sm:block">Faceless Short Video Creator for TikTok & Shorts</p>
+            </div>
+        </div>
+
+        <!-- Center Mode Tabs -->
+        <nav class="hidden md:flex items-center bg-studio-bg p-1 rounded-xl border border-studio-border text-xs font-medium">
+            <button onclick="switchTab('script')" id="tab-script" class="tab-btn px-3 py-1.5 rounded-lg text-white bg-studio-accent shadow flex items-center space-x-2 transition-all">
+                <i class="fa-solid fa-pen-nib"></i><span>Script & Story</span>
+            </button>
+            <button onclick="switchTab('layout')" id="tab-layout" class="tab-btn px-3 py-1.5 rounded-lg text-gray-400 hover:text-white flex items-center space-x-2 transition-all">
+                <i class="fa-solid fa-layer-group"></i><span>Split Layout</span>
+            </button>
+            <button onclick="switchTab('voice')" id="tab-voice" class="tab-btn px-3 py-1.5 rounded-lg text-gray-400 hover:text-white flex items-center space-x-2 transition-all">
+                <i class="fa-solid fa-microphone"></i><span>Voice & Captions</span>
+            </button>
+            <button onclick="switchTab('clipper')" id="tab-clipper" class="tab-btn px-3 py-1.5 rounded-lg text-gray-400 hover:text-white flex items-center space-x-2 transition-all">
+                <i class="fa-solid fa-scissors"></i><span>Auto-Clipper</span>
+            </button>
+        </nav>
+
+        <!-- Right Action Buttons -->
+        <div class="flex items-center space-x-2">
+            <button onclick="openAnalyticsModal()" class="px-3 py-1.5 rounded-xl bg-studio-bg border border-studio-border hover:border-studio-accent/50 text-gray-300 hover:text-white text-xs font-medium flex items-center space-x-2 transition-all">
+                <i class="fa-solid fa-chart-line text-studio-cyan"></i>
+                <span class="hidden sm:inline">Viral Score</span>
+            </button>
+            <button onclick="newProject()" class="px-3 py-1.5 rounded-xl bg-studio-bg border border-studio-border hover:border-studio-border text-gray-300 hover:text-white text-xs font-medium flex items-center space-x-1.5 transition-all">
+                <i class="fa-solid fa-plus"></i><span class="hidden sm:inline">New Project</span>
+            </button>
+            <button onclick="exportVideo()" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-studio-accent to-studio-cyan text-white text-xs font-bold shadow-lg shadow-studio-accent/25 hover:opacity-95 flex items-center space-x-2 transition-all">
+                <i class="fa-solid fa-download"></i><span>Export Short</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- LEFT SIDEBAR: CONTROL PANELS -->
+        <aside class="w-full md:w-96 bg-studio-card border-r border-studio-border flex flex-col shrink-0 overflow-y-auto">
+            
+            <!-- PANEL A: AI SCRIPT & STORY GENERATOR -->
+            <div id="panel-script" class="p-4 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-robot text-studio-accent"></i><span>AI Story & Hook Generator</span>
+                    </h2>
+                    <span class="text-[10px] text-studio-cyan bg-studio-cyan/10 px-2 py-0.5 rounded">Fast AI Engine</span>
+                </div>
+
+                <!-- Template Selector -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1 font-medium">Niche & Tone</label>
+                    <select id="scriptTone" class="w-full bg-studio-bg border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-studio-accent">
+                        <option value="reddit">reddit - AITA / Shocking Confessions</option>
+                        <option value="top5">top5 - Mind-Blowing Top 5 Ranking</option>
+                        <option value="motivational">motivational - Dark Stoic Motivation</option>
+                        <option value="mystery">mystery - Unsolved Creepy Mystery</option>
+                        <option value="commentary">commentary - Viral Tech News & Hot Takes</option>
+                    </select>
+                </div>
+
+                <!-- Prompt Input -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1 font-medium">Topic / Keywords</label>
+                    <textarea id="scriptTopic" rows="2" class="w-full bg-studio-bg border border-studio-border rounded-xl p-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-studio-accent resize-none" placeholder="e.g. 3 Insane facts about space that will keep you awake at night..."></textarea>
+                </div>
+
+                <!-- Duration Picker -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 font-medium">Target Duration</label>
+                        <select id="scriptLength" class="w-full bg-studio-bg border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-studio-accent">
+                            <option value="30">30 Seconds (~75 words)</option>
+                            <option value="60">60 Seconds (~150 words)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 font-medium">Hook Intensity</label>
+                        <select id="hookStyle" class="w-full bg-studio-bg border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-studio-accent">
+                            <option value="extreme">🔥 Extreme Curiosity</option>
+                            <option value="question">❓ Question Hook</option>
+                            <option value="negative">⚠️ Warning / Mistake</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <button onclick="generateAIScript()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-studio-accent to-studio-pink text-white font-semibold text-xs shadow-md hover:opacity-90 transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i><span>Generate Faceless Script</span>
+                </button>
+
+                <!-- Full Script Editor -->
+                <div class="pt-2">
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="text-xs text-gray-400 font-medium">Generated Script (Editable)</label>
+                        <span id="wordCount" class="text-[10px] text-gray-500">0 words</span>
+                    </div>
+                    <textarea id="scriptOutput" rows="8" oninput="updateScriptText(this.value)" class="w-full bg-studio-bg border border-studio-border rounded-xl p-3 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-studio-accent resize-y font-sans leading-relaxed"></textarea>
+                </div>
+            </div>
+
+            <!-- PANEL B: SPLIT-SCREEN & LAYOUT STUDIO -->
+            <div id="panel-layout" class="p-4 space-y-4 hidden">
+                <h2 class="text-sm font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-layer-group text-studio-cyan"></i><span>Split Screen & Visuals</span>
+                </h2>
+
+                <!-- Screen Split Mode -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 font-medium">Layout Mode</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="setLayoutMode('single')" id="btn-layout-single" class="layout-btn p-3 rounded-xl border border-studio-accent bg-studio-accent/20 text-white text-xs font-semibold flex flex-col items-center justify-center space-y-1">
+                            <i class="fa-solid fa-square text-lg"></i><span>Full Screen</span>
+                        </button>
+                        <button onclick="setLayoutMode('split')" id="btn-layout-split" class="layout-btn p-3 rounded-xl border border-studio-border bg-studio-bg text-gray-400 hover:text-white text-xs font-semibold flex flex-col items-center justify-center space-y-1">
+                            <i class="fa-solid fa-table-cells-row text-lg"></i><span>50/50 Stacked Split</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom Gameplay / Satisfying Loop Selector -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1 font-medium">Bottom Screen (Satisfying Visuals)</label>
+                    <select id="bgMediaSelect" onchange="changeBackgroundMedia(this.value)" class="w-full bg-studio-bg border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-studio-accent">
+                        <option value="minecraft">🎮 Minecraft Parkour Loop</option>
+                        <option value="sand">⏳ Kinetic Sand Cutting</option>
+                        <option value="tech">💻 Abstract Neon Tech</option>
+                        <option value="nature">⛰️ Dark Nature Timelapse</option>
+                        <option value="space">🌌 Cosmic Galaxy Simulator</option>
+                    </select>
+                </div>
+
+                <!-- Custom Media Upload -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1 font-medium">Upload Custom Media (Video/Image)</label>
+                    <input type="file" id="mediaUpload" accept="video/*,image/*" onchange="handleFileUpload(event)" class="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-studio-accent file:text-white hover:file:opacity-90 cursor-pointer bg-studio-bg border border-studio-border rounded-xl">
+                </div>
+
+                <!-- Visual Filters -->
+                <div class="space-y-2">
+                    <label class="block text-xs text-gray-400 font-medium">Visual Enhancements</label>
+                    <div class="flex items-center justify-between text-xs text-gray-300 bg-studio-bg p-2 rounded-xl border border-studio-border">
+                        <span>Vignette Effect</span>
+                        <input type="checkbox" id="vignetteToggle" checked onchange="toggleVignette(this.checked)" class="accent-studio-accent">
+                    </div>
+                    <div class="flex items-center justify-between text-xs text-gray-300 bg-studio-bg p-2 rounded-xl border border-studio-border">
+                        <span>Dynamic Camera Zoom Pulse</span>
+                        <input type="checkbox" id="zoomPulseToggle" checked onchange="toggleZoomPulse(this.checked)" class="accent-studio-accent">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL C: VOICEOVER & CAPTIONS SYNC -->
+            <div id="panel-voice" class="p-4 space-y-4 hidden">
+                <h2 class="text-sm font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-microphone text-studio-pink"></i><span>Voiceover & Kinetic Captions</span>
+                </h2>
+
+                <!-- Voice Selection -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1 font-medium">AI Voice Actor (Browser Speech API)</label>
+                    <select id="voiceSelect" class="w-full bg-studio-bg border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-studio-accent">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <!-- Speech Rate & Pitch Controls -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <div class="flex justify-between text-xs text-gray-400 mb-1">
+                            <span>Speed Rate</span>
+                            <span id="rateValue">1.1x</span>
+                        </div>
+                        <input type="range" id="speechRate" min="0.7" max="1.6" step="0.1" value="1.1" oninput="updateSpeechParams()" class="w-full accent-studio-accent">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs text-gray-400 mb-1">
+                            <span>Voice Pitch</span>
+                            <span id="pitchValue">1.0</span>
+                        </div>
+                        <input type="range" id="speechPitch" min="0.5" max="1.5" step="0.1" value="1.0" oninput="updateSpeechParams()" class="w-full accent-studio-accent">
+                    </div>
+                </div>
+
+                <!-- Caption Styling -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 font-medium">Kinetic Caption Style</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="setCaptionStyle('yellow')" id="cap-yellow" class="cap-btn p-2.5 rounded-xl border border-studio-accent bg-studio-bg text-xs font-bold text-yellow-400 text-center">
+                            🟡 Yellow Pop
+                        </button>
+                        <button onclick="setCaptionStyle('neon')" id="cap-neon" class="cap-btn p-2.5 rounded-xl border border-studio-border bg-studio-bg text-xs font-bold text-cyan-400 text-center">
+                            ⚡ Neon Glow
+                        </button>
+                        <button onclick="setCaptionStyle('clean')" id="cap-clean" class="cap-btn p-2.5 rounded-xl border border-studio-border bg-studio-bg text-xs font-bold text-white text-center">
+                            ⚪ Clean White
+                        </button>
+                        <button onclick="setCaptionStyle('kinetic')" id="cap-kinetic" class="cap-btn p-2.5 rounded-xl border border-studio-border bg-studio-bg text-xs font-bold text-pink-400 text-center">
+                            🔥 Kinetic Bounce
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Caption Position Picker -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1 font-medium">Subtitle Screen Position</label>
+                    <select id="captionPos" onchange="updateCaptionPosition(this.value)" class="w-full bg-studio-bg border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-studio-accent">
+                        <option value="center">Center Focus (TikTok Viral Style)</option>
+                        <option value="bottom">Lower Third (Standard)</option>
+                        <option value="top">Top Header</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- PANEL D: AUTO-CLIPPER & HIGHLIGHTS -->
+            <div id="panel-clipper" class="p-4 space-y-4 hidden">
+                <h2 class="text-sm font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-scissors text-studio-accent"></i><span>Video Highlight Auto-Clipper</span>
+                </h2>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Paste a long YouTube video link or podcast script below to simulate extracting 3 high-converting viral shorts automatically.
+                </p>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1 font-medium">Long Video URL / Source</label>
+                    <input type="text" id="clipperUrl" placeholder="https://youtube.com/watch?v=sample" class="w-full bg-studio-bg border border-studio-border rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-studio-accent">
+                </div>
+
+                <button onclick="runAutoClipper()" class="w-full py-2.5 rounded-xl bg-studio-accent text-white font-semibold text-xs shadow hover:opacity-90 transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-bolt"></i><span>Detect Viral Highlights</span>
+                </button>
+
+                <!-- Extracted Highlights List -->
+                <div id="clipperResults" class="space-y-2.5 pt-2 hidden">
+                    <span class="text-xs text-gray-400 font-medium block">Extracted Short Clips:</span>
+                    
+                    <div onclick="selectClippedSegment(0)" class="p-3 bg-studio-bg hover:border-studio-accent border border-studio-border rounded-xl cursor-pointer transition-all">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-studio-cyan">Clip 1: The Mind Opening Hook</span>
+                            <span class="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded font-bold">98% Viral Score</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400 line-clamp-2">"Did you know that in 1962, the world almost ended because of a simple radar malfunction..."</p>
+                    </div>
+
+                    <div onclick="selectClippedSegment(1)" class="p-3 bg-studio-bg hover:border-studio-accent border border-studio-border rounded-xl cursor-pointer transition-all">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-studio-accent">Clip 2: Shocking Twist Ending</span>
+                            <span class="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded font-bold">92% Viral Score</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400 line-clamp-2">"Scientists could not explain why the signal repeated every 16 days until..."</p>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- CENTER WORKSPACE: VERTICAL VIDEO PREVIEW CANVAS -->
+        <main class="flex-1 bg-black/40 flex flex-col justify-between items-center p-4 overflow-hidden relative">
+            
+            <!-- Floating Player Status Bar -->
+            <div class="absolute top-6 left-1/2 -translate-x-1/2 z-10 bg-studio-card/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-studio-border flex items-center space-x-3 text-xs">
+                <span class="flex items-center space-x-1.5 text-gray-300">
+                    <span id="recordingDot" class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+                    <span id="aspectLabel" class="font-bold">9:16 Vertical</span>
+                </span>
+                <span class="text-gray-600">|</span>
+                <span id="timeDisplay" class="font-mono text-studio-cyan font-semibold">00:00 / 00:30</span>
+            </div>
+
+            <!-- Canvas Container Frame -->
+            <div class="flex-1 flex items-center justify-center my-8 w-full max-h-[calc(100vh-220px)]">
+                <div id="playerFrame" class="relative aspect-[9/16] h-full max-h-full rounded-2xl overflow-hidden shadow-2xl border-2 border-studio-border bg-studio-bg flex flex-col justify-center items-center group transition-all duration-300">
+                    
+                    <!-- Main Canvas Preview -->
+                    <canvas id="videoCanvas" class="w-full h-full object-cover"></canvas>
+
+                    <!-- Overlay Captions Container (DOM Overlay for high sharpness) -->
+                    <div id="captionOverlay" class="absolute inset-x-4 pointer-events-none flex flex-col items-center justify-center text-center transition-all duration-200" style="bottom: 35%;">
+                        <div id="captionText" class="font-black text-2xl tracking-wide px-3 py-1 rounded-lg uppercase drop-shadow-lg text-yellow-400 leading-snug">
+                            VIRAL HOOK GOES HERE
+                        </div>
+                    </div>
+
+                    <!-- Audio Equalizer Overlay -->
+                    <div class="absolute top-4 right-4 flex items-end space-x-1 h-6 pointer-events-none">
+                        <span class="eq-bar w-1 bg-studio-accent rounded-full h-2 transition-all"></span>
+                        <span class="eq-bar w-1 bg-studio-cyan rounded-full h-4 transition-all"></span>
+                        <span class="eq-bar w-1 bg-studio-pink rounded-full h-3 transition-all"></span>
+                    </div>
+
+                    <!-- Play Overlay Button -->
+                    <button onclick="togglePlay()" id="centerPlayBtn" class="absolute w-16 h-16 rounded-full bg-studio-accent/90 text-white flex items-center justify-center text-2xl shadow-xl hover:scale-110 transition-all opacity-0 group-hover:opacity-100">
+                        <i id="centerPlayIcon" class="fa-solid fa-play ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- CANVAS PLAYER CONTROLS TOOLBAR -->
+            <div class="w-full max-w-xl bg-studio-card border border-studio-border rounded-2xl p-2.5 flex items-center justify-between shadow-xl z-10 shrink-0">
+                <div class="flex items-center space-x-2">
+                    <button onclick="togglePlay()" id="btnPlay" class="w-10 h-10 rounded-xl bg-studio-accent text-white flex items-center justify-center text-sm shadow hover:opacity-90 transition-all">
+                        <i id="playIcon" class="fa-solid fa-play"></i>
+                    </button>
+                    <button onclick="restartPlayback()" class="w-9 h-9 rounded-xl bg-studio-bg text-gray-300 hover:text-white flex items-center justify-center text-xs border border-studio-border">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
+
+                <!-- Aspect Ratio Switcher -->
+                <div class="flex bg-studio-bg p-1 rounded-xl border border-studio-border text-xs">
+                    <button onclick="setAspectRatio('9:16')" id="ratio-9-16" class="ratio-btn px-2.5 py-1 rounded-lg bg-studio-accent text-white font-medium">9:16</button>
+                    <button onclick="setAspectRatio('16:9')" id="ratio-16-9" class="ratio-btn px-2.5 py-1 rounded-lg text-gray-400 hover:text-white font-medium">16:9</button>
+                    <button onclick="setAspectRatio('1:1')" id="ratio-1-1" class="ratio-btn px-2.5 py-1 rounded-lg text-gray-400 hover:text-white font-medium">1:1</button>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <button onclick="downloadFrame()" class="px-3 py-1.5 rounded-xl bg-studio-bg hover:bg-studio-border text-xs text-gray-300 font-medium border border-studio-border flex items-center space-x-1.5">
+                        <i class="fa-solid fa-camera"></i><span class="hidden sm:inline">Snapshot</span>
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- BOTTOM TIMELINE TRACKS AREA -->
+    <footer class="h-44 bg-studio-card border-t border-studio-border flex flex-col shrink-0 select-none">
+        
+        <!-- Timeline Controls Bar -->
+        <div class="h-9 border-b border-studio-border/60 px-4 flex items-center justify-between text-xs text-gray-400 bg-studio-bg/50">
+            <div class="flex items-center space-x-4">
+                <span class="font-semibold text-gray-300 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-film text-studio-accent"></i><span>Timeline Editor</span>
+                </span>
+                <span class="text-[10px] text-gray-500">Auto-Synced with Voiceover</span>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button onclick="autoSplitClips()" class="hover:text-white text-[11px] flex items-center space-x-1 bg-studio-border/50 px-2 py-0.5 rounded">
+                    <i class="fa-solid fa-wand-magic"></i><span>Auto-Highlight Clips</span>
+                </button>
+                <div class="flex items-center space-x-1">
+                    <i class="fa-solid fa-magnifying-glass-minus text-[10px]"></i>
+                    <input type="range" id="timelineZoom" min="1" max="3" step="0.1" value="1" class="w-16 accent-studio-accent">
+                    <i class="fa-solid fa-magnifying-glass-plus text-[10px]"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Tracks Container -->
+        <div class="flex-1 relative overflow-x-auto overflow-y-hidden p-3 space-y-2 bg-[#0d0b16]" id="timelineContainer">
+            
+            <!-- Playhead Indicator Line -->
+            <div id="playhead" class="absolute top-0 bottom-0 w-0.5 bg-studio-cyan z-30 pointer-events-none transition-all duration-75" style="left: 12px;">
+                <div class="w-3 h-3 bg-studio-cyan rounded-full -ml-[5px] -top-1 relative shadow-md"></div>
+            </div>
+
+            <!-- TRACK 1: VOICE SPEECH TRACK -->
+            <div class="h-8 bg-studio-bg rounded-lg border border-studio-border/60 flex items-center px-3 relative overflow-hidden group">
+                <span class="w-20 text-[10px] font-bold text-studio-accent shrink-0 flex items-center space-x-1 z-10">
+                    <i class="fa-solid fa-microphone"></i><span>Voice Track</span>
+                </span>
+                <div class="flex-1 h-5 bg-studio-accent/20 border border-studio-accent/40 rounded flex items-center px-2 relative overflow-hidden">
+                    <div id="voiceWaveform" class="w-full flex items-center space-x-0.5 opacity-60">
+                        <!-- Bars generated dynamically -->
+                    </div>
+                    <span id="voiceTrackLabel" class="absolute left-3 text-[10px] text-studio-accent font-semibold truncate">AI Voice Over (Narrator)</span>
+                </div>
+            </div>
+
+            <!-- TRACK 2: SUBTITLE / CAPTIONS TRACK -->
+            <div class="h-8 bg-studio-bg rounded-lg border border-studio-border/60 flex items-center px-3 relative overflow-hidden group">
+                <span class="w-20 text-[10px] font-bold text-yellow-400 shrink-0 flex items-center space-x-1 z-10">
+                    <i class="fa-solid fa-closed-captioning"></i><span>Captions</span>
+                </span>
+                <div id="captionTrackBlocks" class="flex-1 h-5 flex items-center space-x-1">
+                    <!-- Dynamic Blocks -->
+                </div>
+            </div>
+
+            <!-- TRACK 3: GAMEPLAY / BACKGROUND MEDIA -->
+            <div class="h-8 bg-studio-bg rounded-lg border border-studio-border/60 flex items-center px-3 relative overflow-hidden group">
+                <span class="w-20 text-[10px] font-bold text-studio-cyan shrink-0 flex items-center space-x-1 z-10">
+                    <i class="fa-solid fa-gamepad"></i><span>Background</span>
+                </span>
+                <div class="flex-1 h-5 bg-studio-cyan/20 border border-studio-cyan/40 rounded flex items-center justify-between px-3">
+                    <span id="bgTrackLabel" class="text-[10px] text-studio-cyan font-semibold">Minecraft Parkour Loop (Infinite)</span>
+                    <i class="fa-solid fa-repeat text-[10px] text-studio-cyan/70"></i>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- VIRAL ANALYTICS MODAL -->
+    <div id="analyticsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-studio-card border border-studio-border w-full max-w-lg rounded-2xl p-6 shadow-2xl relative space-y-4">
+            <button onclick="closeAnalyticsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-studio-cyan/20 text-studio-cyan flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-base text-white">Viral Short Predictor & Score</h3>
+                    <p class="text-xs text-gray-400">AI analysis of script hook, pacing, and retention potential</p>
+                </div>
+            </div>
+
+            <!-- Score Circle & Breakdown -->
+            <div class="grid grid-cols-3 gap-3 bg-studio-bg p-4 rounded-xl border border-studio-border text-center">
+                <div>
+                    <div id="scoreHook" class="text-xl font-extrabold text-studio-accent">96/100</div>
+                    <div class="text-[10px] text-gray-400 font-medium">Hook Strength</div>
+                </div>
+                <div>
+                    <div id="scorePacing" class="text-xl font-extrabold text-studio-cyan">165 WPM</div>
+                    <div class="text-[10px] text-gray-400 font-medium">Viral Pacing</div>
+                </div>
+                <div>
+                    <div id="scoreRetention" class="text-xl font-extrabold text-green-400">High</div>
+                    <div class="text-[10px] text-gray-400 font-medium">Est. Watch Time</div>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="space-y-2">
+                <h4 class="text-xs font-bold text-gray-300">Optimization Feedback</h4>
+                <ul class="text-xs text-gray-400 space-y-1.5 list-disc list-inside">
+                    <li>The first 3 words contain strong curiosity triggers.</li>
+                    <li>Kinetic caption color contrast is optimized for TikTok FYP algorithm.</li>
+                    <li>Stacked Minecraft gameplay increases retention by ~42% for 18-24 demographics.</li>
+                </ul>
+            </div>
+
+            <!-- Best Posting Times -->
+            <div class="bg-studio-accent/10 border border-studio-accent/30 rounded-xl p-3 text-xs text-studio-accent flex items-center justify-between">
+                <span><i class="fa-solid fa-clock mr-1.5"></i>Best Time to Post Today:</span>
+                <span class="font-bold">6:30 PM & 8:45 PM</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // GLOBAL APP STATE
+        const state = {
+            isPlaying: false,
+            currentTime: 0,
+            duration: 30,
+            script: "Did you know that in 1962, a single radar glitch almost triggered World War 3? A computer reported five nuclear missiles coming straight for North America. But one brave officer refused to press the launch button, saving the entire world in five seconds.",
+            words: [],
+            currentWordIdx: 0,
+            layoutMode: 'split', // 'single' or 'split'
+            bgType: 'minecraft', // 'minecraft', 'sand', 'tech', 'nature', 'space'
+            captionStyle: 'yellow', // 'yellow', 'neon', 'clean', 'kinetic'
+            captionPos: 'center', // 'center', 'bottom', 'top'
+            speechRate: 1.1,
+            speechPitch: 1.0,
+            selectedVoice: null,
+            aspectRatio: '9:16',
+            vignette: true,
+            zoomPulse: true,
+            customMedia: null,
+            animationFrameId: null
+        };
+
+        // CANVAS & SYNTHESIS INITIALIZATION
+        let canvas, ctx;
+        const synth = window.speechSynthesis;
+        let voices = [];
+
+        window.onload = () => {
+            canvas = document.getElementById('videoCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Set render resolution
+            canvas.width = 720;
+            canvas.height = 1280;
+
+            // Load Voices
+            populateVoiceList();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = populateVoiceList;
+            }
+
+            // Init Script output
+            document.getElementById('scriptOutput').value = state.script;
+            processScriptWords();
+            generateWaveformBars();
+
+            // Render loop start
+            requestAnimationFrame(renderLoop);
+        };
+
+        // TAB SWITCHING LOGIC
+        function switchTab(tabName) {
+            ['script', 'layout', 'voice', 'clipper'].forEach(t => {
+                const panel = document.getElementById(`panel-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabName) {
+                    panel.classList.remove('hidden');
+                    btn.classList.add('bg-studio-accent', 'text-white', 'shadow');
+                    btn.classList.remove('text-gray-400');
+                } else {
+                    panel.classList.add('hidden');
+                    btn.classList.remove('bg-studio-accent', 'text-white', 'shadow');
+                    btn.classList.add('text-gray-400');
+                }
+            });
+        }
+
+        // PRE-SET AI SCRIPT TEMPLATES
+        const SCRIPT_TEMPLATES = {
+            reddit: "AITA for refusing to give my sister my lottery winnings? Three months ago, I won $50,000. My sister immediately called saying I owed her half because she picked the numbers. But here is the crazy part... I bought the ticket on a completely different day.",
+            top5: "Top 3 darkest secrets companies don't want you to know. Number 3: Fast food burgers never rot because of their moisture levels. Number 2: Airline ticket prices secretly go up if you search for the same flight twice. And Number 1 will shock you.",
+            motivational: "When you feel like giving up, remember why you started. The noise of failure is loud today, but victory is completely silent. Work in the shadows until your success becomes undeniable.",
+            mystery: "In 1977, astronomers received a 72-second signal from deep space known as the Wow signal. It was 30 times louder than background radiation. To this day, we still have no idea who sent it.",
+            commentary: "AI is replacing entire industries faster than anyone expected. Just last week, new tools were launched that can generate full videos from a single line of text. Here is what this means for your job in 2026."
+        };
+
+        function generateAIScript() {
+            const tone = document.getElementById('scriptTone').value;
+            const topic = document.getElementById('scriptTopic').value;
+            
+            let template = SCRIPT_TEMPLATES[tone] || SCRIPT_TEMPLATES.reddit;
+            if (topic.trim() !== '') {
+                template = `Here is the truth about ${topic.trim()}. ${template}`;
+            }
+
+            document.getElementById('scriptOutput').value = template;
+            updateScriptText(template);
+
+            // Show feedback
+            const btn = event.currentTarget;
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> Script Generated!`;
+            setTimeout(() => {
+                btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Faceless Script`;
+            }, 2000);
+        }
+
+        function updateScriptText(text) {
+            state.script = text;
+            processScriptWords();
+        }
+
+        function processScriptWords() {
+            const cleanText = state.script.trim();
+            const words = cleanText.split(/\s+/).filter(w => w.length > 0);
+            state.words = words;
+
+            document.getElementById('wordCount').innerText = `${words.length} words`;
+            
+            // Calculate est duration (approx 2.5 words per sec at 1.1x speed)
+            state.duration = Math.max(10, Math.round(words.length / 2.5));
+            updateTimeDisplay();
+            renderTimelineCaptionBlocks();
+        }
+
+        // VOICE SYNTHESIS CONTROL
+        function populateVoiceList() {
+            voices = synth.getVoices();
+            const voiceSelect = document.getElementById('voiceSelect');
+            voiceSelect.innerHTML = '';
+
+            const preferredVoices = voices.filter(v => v.lang.includes('en'));
+            const listToUse = preferredVoices.length > 0 ? preferredVoices : voices;
+
+            listToUse.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                option.value = index;
+                if (voice.name.includes('Natural') || voice.name.includes('Google') || voice.name.includes('Samantha') || index === 0) {
+                    option.selected = true;
+                }
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        function updateSpeechParams() {
+            state.speechRate = parseFloat(document.getElementById('speechRate').value);
+            state.speechPitch = parseFloat(document.getElementById('speechPitch').value);
+            document.getElementById('rateValue').innerText = `${state.speechRate}x`;
+            document.getElementById('pitchValue').innerText = `${state.speechPitch}`;
+        }
+
+        // PLAYBACK & SPEECH SYNC
+        function togglePlay() {
+            if (state.isPlaying) {
+                pausePlayback();
+            } else {
+                startPlayback();
+            }
+        }
+
+        function startPlayback() {
+            if (synth.speaking) synth.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(state.script);
+            
+            // Voice selection
+            const voiceIdx = document.getElementById('voiceSelect').value;
+            if (voices[voiceIdx]) utterance.voice = voices[voiceIdx];
+            
+            utterance.rate = state.speechRate;
+            utterance.pitch = state.speechPitch;
+
+            // Sync Word Highlighting
+            utterance.onboundary = (event) => {
+                if (event.name === 'word') {
+                    const charIdx = event.charIndex;
+                    // Estimate current word index
+                    const textUpToChar = state.script.substring(0, charIdx);
+                    const wordIdx = textUpToChar.trim().split(/\s+/).filter(w => w.length > 0).length;
+                    state.currentWordIdx = Math.min(wordIdx, state.words.length - 1);
+                    updateCaptionDisplay();
+                    updatePlayheadPosition();
+                }
+            };
+
+            utterance.onend = () => {
+                pausePlayback();
+                state.currentTime = state.duration;
+                updateTimeDisplay();
+            };
+
+            synth.speak(utterance);
+            state.isPlaying = true;
+            updatePlayButtons(true);
+        }
+
+        function pausePlayback() {
+            synth.cancel();
+            state.isPlaying = false;
+            updatePlayButtons(false);
+        }
+
+        function restartPlayback() {
+            pausePlayback();
+            state.currentTime = 0;
+            state.currentWordIdx = 0;
+            updateTimeDisplay();
+            updateCaptionDisplay();
+            updatePlayheadPosition();
+        }
+
+        function updatePlayButtons(playing) {
+            const playIcon = document.getElementById('playIcon');
+            const centerPlayIcon = document.getElementById('centerPlayIcon');
+            if (playing) {
+                playIcon.className = "fa-solid fa-pause";
+                centerPlayIcon.className = "fa-solid fa-pause ml-0";
+            } else {
+                playIcon.className = "fa-solid fa-play";
+                centerPlayIcon.className = "fa-solid fa-play ml-1";
+            }
+        }
+
+        // CAPTION STYLING & DISPLAY
+        function setCaptionStyle(style) {
+            state.captionStyle = style;
+            document.querySelectorAll('.cap-btn').forEach(btn => btn.classList.replace('border-studio-accent', 'border-studio-border'));
+            document.getElementById(`cap-${style}`).classList.replace('border-studio-border', 'border-studio-accent');
+            updateCaptionDisplay();
+        }
+
+        function updateCaptionPosition(pos) {
+            state.captionPos = pos;
+            const captionOverlay = document.getElementById('captionOverlay');
+            if (pos === 'top') {
+                captionOverlay.style.bottom = 'auto';
+                captionOverlay.style.top = '15%';
+            } else if (pos === 'bottom') {
+                captionOverlay.style.top = 'auto';
+                captionOverlay.style.bottom = '15%';
+            } else {
+                captionOverlay.style.top = 'auto';
+                captionOverlay.style.bottom = '38%';
+            }
+        }
+
+        function updateCaptionDisplay() {
+            const captionText = document.getElementById('captionText');
+            if (!state.words || state.words.length === 0) {
+                captionText.innerText = "";
+                return;
+            }
+
+            const currentWord = state.words[state.currentWordIdx] || state.words[0];
+            const nextWord = state.words[state.currentWordIdx + 1] || "";
+            
+            captionText.innerText = `${currentWord} ${nextWord}`.toUpperCase();
+
+            // Apply classes based on style
+            captionText.className = "font-black text-2xl tracking-wide px-3 py-1 rounded-lg uppercase drop-shadow-lg leading-snug transition-all ";
+            
+            if (state.captionStyle === 'yellow') {
+                captionText.className += "text-yellow-400 bg-black/60 border border-yellow-400/30 caption-bounce";
+            } else if (state.captionStyle === 'neon') {
+                captionText.className += "text-cyan-300 neon-glow bg-black/40";
+            } else if (state.captionStyle === 'clean') {
+                captionText.className += "text-white bg-black/80 rounded-xl px-4 py-2";
+            } else if (state.captionStyle === 'kinetic') {
+                captionText.className += "text-pink-400 bg-purple-950/80 border-2 border-pink-500 caption-bounce";
+            }
+        }
+
+        // LAYOUT & BACKGROUND CONTROLS
+        function setLayoutMode(mode) {
+            state.layoutMode = mode;
+            document.querySelectorAll('.layout-btn').forEach(btn => btn.classList.replace('border-studio-accent', 'border-studio-border'));
+            document.getElementById(`btn-layout-${mode}`).classList.replace('border-studio-border', 'border-studio-accent');
+        }
+
+        function changeBackgroundMedia(val) {
+            state.bgType = val;
+            state.customMedia = null;
+            document.getElementById('bgTrackLabel').innerText = `${val.toUpperCase()} Gameplay Loop`;
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const isVideo = file.type.startsWith('video');
+                if (isVideo) {
+                    const video = document.createElement('video');
+                    video.src = url;
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    state.customMedia = video;
+                } else {
+                    const img = new Image();
+                    img.src = url;
+                    state.customMedia = img;
+                }
+                document.getElementById('bgTrackLabel').innerText = `Custom Media: ${file.name}`;
+            }
+        }
+
+        function toggleVignette(val) { state.vignette = val; }
+        function toggleZoomPulse(val) { state.zoomPulse = val; }
+
+        // ASPECT RATIO SWITCHER
+        function setAspectRatio(ratio) {
+            state.aspectRatio = ratio;
+            const frame = document.getElementById('playerFrame');
+            document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('bg-studio-accent', 'text-white'));
+            
+            if (ratio === '9:16') {
+                frame.className = "relative aspect-[9/16] h-full max-h-full rounded-2xl overflow-hidden shadow-2xl border-2 border-studio-border bg-studio-bg flex flex-col justify-center items-center group transition-all duration-300";
+                document.getElementById('ratio-9-16').classList.add('bg-studio-accent', 'text-white');
+                canvas.width = 720; canvas.height = 1280;
+            } else if (ratio === '16:9') {
+                frame.className = "relative aspect-[16/9] w-full max-w-full rounded-2xl overflow-hidden shadow-2xl border-2 border-studio-border bg-studio-bg flex flex-col justify-center items-center group transition-all duration-300";
+                document.getElementById('ratio-16-9').classList.add('bg-studio-accent', 'text-white');
+                canvas.width = 1280; canvas.height = 720;
+            } else if (ratio === '1:1') {
+                frame.className = "relative aspect-square h-full max-h-full rounded-2xl overflow-hidden shadow-2xl border-2 border-studio-border bg-studio-bg flex flex-col justify-center items-center group transition-all duration-300";
+                document.getElementById('ratio-1-1').classList.add('bg-studio-accent', 'text-white');
+                canvas.width = 1000; canvas.height = 1000;
+            }
+            document.getElementById('aspectLabel').innerText = `${ratio} Ratio`;
+        }
+
+        // CANVAS ANIMATION & RENDERING ENGINE
+        let animTime = 0;
+        function renderLoop() {
+            animTime += 0.03;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Dynamic camera zoom effect
+            const zoomScale = state.zoomPulse ? 1 + Math.sin(animTime * 1.5) * 0.03 : 1;
+
+            ctx.save();
+            ctx.translate(w / 2, h / 2);
+            ctx.scale(zoomScale, zoomScale);
+            ctx.translate(-w / 2, -h / 2);
+
+            if (state.layoutMode === 'split') {
+                // TOP HALF: Main Speaker / Story Visual
+                renderTopScreen(ctx, w, h / 2, animTime);
+                // BOTTOM HALF: Gameplay / Satisfying Loop
+                renderBottomScreen(ctx, 0, h / 2, w, h / 2, animTime);
+                
+                // Split Divider Line
+                ctx.strokeStyle = '#8b5cf6';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(0, h / 2);
+                ctx.lineTo(w, h / 2);
+                ctx.stroke();
+            } else {
+                // SINGLE FULL SCREEN
+                renderBottomScreen(ctx, 0, 0, w, h, animTime);
+            }
+
+            ctx.restore();
+
+            // Vignette Overlay
+            if (state.vignette) {
+                const grad = ctx.createRadialGradient(w/2, h/2, w*0.3, w/2, h/2, w*0.8);
+                grad.addColorStop(0, 'rgba(0,0,0,0)');
+                grad.addColorStop(1, 'rgba(0,0,0,0.65)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
+            }
+
+            // Animate Equalizer Bars if playing
+            if (state.isPlaying) {
+                document.querySelectorAll('.eq-bar').forEach(bar => {
+                    bar.style.height = `${Math.floor(Math.random() * 18) + 4}px`;
+                });
+            }
+
+            requestAnimationFrame(renderLoop);
+        }
+
+        function renderTopScreen(ctx, w, h, time) {
+            // Dark gradient speaker backdrop
+            const grad = ctx.createLinearGradient(0, 0, w, h);
+            grad.addColorStop(0, '#1e1b2e');
+            grad.addColorStop(1, '#0f0d19');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Animated Speaker Avatar / Waveform Graphic
+            ctx.fillStyle = '#8b5cf6';
+            ctx.beginPath();
+            ctx.arc(w / 2, h / 2 - 20, 90 + Math.sin(time * 3) * 10, 0, Math.PI * 2);
+            ctx.globalAlpha = 0.2;
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+
+            // AI Avatar Icon
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 80px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🎙️', w / 2, h / 2 - 20);
+
+            // Speaker Title
+            ctx.font = 'bold 28px "Plus Jakarta Sans"';
+            ctx.fillStyle = '#06b6d4';
+            ctx.fillText('AI VOICE NARRATOR', w / 2, h / 2 + 100);
+        }
+
+        function renderBottomScreen(ctx, x, y, w, h, time) {
+            if (state.customMedia) {
+                ctx.drawImage(state.customMedia, x, y, w, h);
+                return;
+            }
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(x, y, w, h);
+            ctx.clip();
+
+            if (state.bgType === 'minecraft') {
+                // Simulated 3D Minecraft Parkour Loop
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(x, y, w, h);
+
+                const blockWidth = 140;
+                const speed = (time * 180) % blockWidth;
+                
+                for (let i = -1; i < 6; i++) {
+                    const blockX = x + i * blockWidth - speed;
+                    const blockY = y + h - 180 + Math.sin(i + time) * 30;
+
+                    // Dirt block
+                    ctx.fillStyle = '#854d0e';
+                    ctx.fillRect(blockX, blockY, 110, 160);
+                    // Grass top
+                    ctx.fillStyle = '#22c55e';
+                    ctx.fillRect(blockX, blockY, 110, 30);
+                }
+                
+                // Floating coins / obstacles
+                ctx.fillStyle = '#eab308';
+                ctx.beginPath();
+                ctx.arc(x + w/2, y + h/2 - Math.abs(Math.sin(time*4))*80, 25, 0, Math.PI*2);
+                ctx.fill();
+
+            } else if (state.bgType === 'sand') {
+                // Kinetic Sand Cutting Simulator
+                ctx.fillStyle = '#3f3cbb';
+                ctx.fillRect(x, y, w, h);
+
+                for (let i = 0; i < 40; i++) {
+                    const posX = x + (Math.sin(i + time) * 0.5 + 0.5) * w;
+                    const posY = y + (Math.cos(i * 2 + time) * 0.5 + 0.5) * h;
+                    ctx.fillStyle = i % 2 === 0 ? '#ec4899' : '#8b5cf6';
+                    ctx.beginPath();
+                    ctx.arc(posX, posY, 15 + Math.sin(time + i)*8, 0, Math.PI*2);
+                    ctx.fill();
+                }
+
+            } else {
+                // Neon Abstract Tech Loop
+                ctx.fillStyle = '#09090b';
+                ctx.fillRect(x, y, w, h);
+
+                ctx.strokeStyle = '#06b6d4';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < 15; i++) {
+                    ctx.beginPath();
+                    ctx.arc(x + w/2, y + h/2, (i * 35 + time * 40) % (w/1.2), 0, Math.PI*2);
+                    ctx.stroke();
+                }
+            }
+
+            ctx.restore();
+        }
+
+        // TIMELINE RENDERING HELPER
+        function generateWaveformBars() {
+            const container = document.getElementById('voiceWaveform');
+            container.innerHTML = '';
+            for (let i = 0; i < 70; i++) {
+                const bar = document.createElement('div');
+                const h = Math.floor(Math.random() * 14) + 3;
+                bar.className = 'w-1 bg-studio-accent rounded-full';
+                bar.style.height = `${h}px`;
+                container.appendChild(bar);
+            }
+        }
+
+        function renderTimelineCaptionBlocks() {
+            const container = document.getElementById('captionTrackBlocks');
+            container.innerHTML = '';
+
+            const numBlocks = Math.min(state.words.length, 12);
+            for (let i = 0; i < numBlocks; i++) {
+                const block = document.createElement('div');
+                block.className = 'h-5 bg-yellow-400/20 border border-yellow-400/50 rounded text-[9px] text-yellow-300 px-2 flex items-center justify-center font-bold truncate flex-1';
+                block.innerText = state.words[i] || `Clip ${i+1}`;
+                container.appendChild(block);
+            }
+        }
+
+        function updatePlayheadPosition() {
+            const playhead = document.getElementById('playhead');
+            const progress = (state.currentWordIdx / Math.max(1, state.words.length)) * 100;
+            playhead.style.left = `calc(${Math.min(95, progress)}% + 12px)`;
+        }
+
+        function updateTimeDisplay() {
+            const secs = Math.floor(state.currentTime);
+            const durSecs = Math.floor(state.duration);
+            document.getElementById('timeDisplay').innerText = `00:${secs < 10 ? '0' : ''}${secs} / 00:${durSecs < 10 ? '0' : ''}${durSecs}`;
+        }
+
+        function autoSplitClips() {
+            alert("Auto-Highlight Engine detected 3 high-engagement scene cuts based on script emotional hooks!");
+            renderTimelineCaptionBlocks();
+        }
+
+        // AUTO-CLIPPER ENGINE SIMULATOR
+        function runAutoClipper() {
+            const url = document.getElementById('clipperUrl').value;
+            if (!url) {
+                alert("Please enter a YouTube video URL first!");
+                return;
+            }
+            document.getElementById('clipperResults').classList.remove('hidden');
+        }
+
+        function selectClippedSegment(idx) {
+            const samples = [
+                "Did you know that in 1962, the world almost ended because of a simple radar malfunction? Scientists were stunned.",
+                "Scientists could not explain why the signal repeated every 16 days until they analyzed deep space radiation patterns."
+            ];
+            document.getElementById('scriptOutput').value = samples[idx];
+            updateScriptText(samples[idx]);
+            switchTab('script');
+        }
+
+        // VIRAL ANALYTICS MODAL
+        function openAnalyticsModal() {
+            document.getElementById('analyticsModal').classList.remove('hidden');
+        }
+        function closeAnalyticsModal() {
+            document.getElementById('analyticsModal').classList.add('hidden');
+        }
+
+        // ACTION BUTTON HANDLERS
+        function newProject() {
+            if (confirm("Start a new Faceless Short project?")) {
+                document.getElementById('scriptOutput').value = "";
+                updateScriptText("");
+                restartPlayback();
+            }
+        }
+
+        function downloadFrame() {
+            const link = document.createElement('a');
+            link.download = 'viblo-short-preview.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function exportVideo() {
+            const exportBtn = event.currentTarget;
+            exportBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Rendering 1080p...</span>`;
+            
+            setTimeout(() => {
+                downloadFrame();
+                exportBtn.innerHTML = `<i class="fa-solid fa-download"></i><span>Export Short</span>`;
+                alert("Export Completed! Preview frame downloaded. Final MP4 video stream ready for upload to TikTok & Shorts.");
+            }, 2500);
+        }
+    </script>
+</body>
